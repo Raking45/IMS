@@ -1,9 +1,17 @@
 import { Routes } from '@angular/router';
-import { HomeComponent } from './home/home.component';
+import { MainLayoutComponent} from './layouts/main-layout/main-layout.component'
+import { DashboardComponent } from './pages/dashboard/dashboard.component';
 
+// Export the Routes
 export const routes: Routes = [
   {
     path: '',
-    component: HomeComponent
+    component: MainLayoutComponent,
+    children: [
+      {
+        path: '',
+        component: DashboardComponent
+      }
+    ]
   }
 ];

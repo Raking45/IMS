@@ -5,6 +5,8 @@
  * Description: Error handling middleware functions.
  */
 
+'use strict';
+
 // Require statements
 const createError = require('http-errors');
 

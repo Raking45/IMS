@@ -1,8 +1,63 @@
 /* You can add global styles to this file, and also import other style files */
+
+/* Google Fonts (Poppins, Rubik, Lora) */
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
+
+/* Global Color Styles */
+:root {
+  --primary-color: #2E2E2E; /* Neutral dark grey (used in headers, buttons) */
+  --primary-light: #4F4F4F; /* Mid-grey for hove and lighter variants */
+  --primary-dark: #1A1A1A; /* Almost black, for deep contrast */
+  --primary-black: #000000;
+
+  --accent-color: #A3B18A; /* Muted sage green for subtle highlights */
+  --accent-light: #D1DCC1; /* Pale sage for backgrounds or hovers */
+  --accent-dark: #6C7A4C; /* Deep olive for clickable accents */
+
+  --success-color: #4CAF50; /* Positive green */
+  --error-color: #D64545; /* Professional but visible red */
+  --warning-color: #F2C94C; /* Muted yellow-gold */
+  --info-color: #2D9CDB; /* Light blue for notifications */
+
+  --background-color: #F5f5f5; /* Light warm grey */
+  --surface-color: #FFFFFF; /* Clean white cards, tables, etc. */
+
+  --text-primary: #1F1F1F; /* Very dark grey - softer than black */
+  --text-secondary: #6B6B6B; /* Balanced mid-grey for labels and placeholders */
+  --text-white: #ffffff;
+
+  --border-color: #D4D4D4; /* Subtle neutral for separation */
+  --shadow-color: rgba(0,0,0,0.05); /* Box shadow */
+  --hover-color: #3F3F3F; /* Slightly lighter grey hover for buttons/menus */
+}
+
+/* Body Styles */
 body {
-  font-family: 'Roboto', sans-serif;
+  font-family: Poppins, sans-serif;
+  background-color: var(--background-color);
   margin: 0;
   padding: 0;
   height: 100%;
 }
 
+/* Card Styles */
+.card {
+  background-color: var(--surface-color);
+  border-radius: 8px;
+  box-shadow: 0 4px 8px var(--shadow-color);
+  overflow: hidden;
+  margin: 20px 0;
+}
+
+.card-header {
+  background-color: var(--primary-color);
+  font-family: Rubik, sans-serif;
+  color: var(--surface-color);
+  padding: 15px;
+  font-size: 1.25em;
+}
+
+.card-body {
+  font-family: Lora, sans-serif;
+  padding: 15px;
+}
