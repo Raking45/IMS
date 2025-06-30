@@ -19,6 +19,7 @@ const connectToDatabase = require('./routes/utils/mongoose'); // Import Connecti
 const indexRouter = require('./routes/index');
 const dashboardRouter = require('./routes/dashboard');
 
+
 // Connect to MongoDB using Mongoose
 connectToDatabase();  // Initializes DB Connection
 
