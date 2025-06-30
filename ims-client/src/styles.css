@@ -11,8 +11,8 @@
   --primary-black: #000000;
 
   --accent-color: #A3B18A; /* Muted sage green for subtle highlights */
-  --accent-light: #D1DCC1; /* Pale sage for backgrounds or hovers */
-  --accent-dark: #6C7A4C; /* Deep olive for clickable accents */
+  --accent-light: #9AB5C5; /* Pale sage for backgrounds or hovers */
+  --accent-dark: #336A8B; /* Deep olive for clickable accents */
 
   --success-color: #4CAF50; /* Positive green */
   --error-color: #D64545; /* Professional but visible red */

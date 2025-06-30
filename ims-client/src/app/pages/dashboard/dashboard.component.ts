@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { TableComponent } from '../../shared/table/table.component'; // adjust path if needed
+import { TableComponent } from '../../shared/table/table.component'; 
 import { environment } from '../../../environments/environment';
 
 @Component({
@@ -24,7 +24,7 @@ import { environment } from '../../../environments/environment';
         [title]="'Categories'"
         [data]="categories"
         [headers]="categoryHeaders"
-        [sortableColumns]="['name']"
+        [sortableColumns]="['categoryName']"
         [headerBackground]="'default'">
       </app-table>
 
@@ -33,7 +33,7 @@ import { environment } from '../../../environments/environment';
         [title]="'Suppliers'"
         [data]="suppliers"
         [headers]="supplierHeaders"
-        [sortableColumns]="['name', 'contactEmail']"
+        [sortableColumns]="['supplierName', 'contactInformation']"
         [headerBackground]="'default'">
       </app-table>
     </div>

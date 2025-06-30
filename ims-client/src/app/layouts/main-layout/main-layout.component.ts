@@ -80,7 +80,7 @@ import { CookieService } from 'ngx-cookie-service';
           <!-- User Profile Dropdown -->
           <div class="app-user-profile" (click)="toggleDropdown()">
             <div class="app-user-avatar">{{ userInitial }}</div>
-            <div class="app-user-arrow" [class.up]="dropdownVisible">&#9660;</div>
+            <div class="app-user-arrow" [class.up]="dropdownVisible">&#10146;</div>
             <div class="app-user-dropdown" [class.show]="dropdownVisible">
               <span>Welcome {{ sessionUser.username }}!</span>
               <hr class="lighter-hr" />
@@ -136,7 +136,7 @@ import { CookieService } from 'ngx-cookie-service';
 
     .app-side-menu-title {
       margin: 0;
-      color: var(--accent-color);
+      color: var(--accent-light);
       font-family: 'Rubik', sans-serif;
       letter-spacing: 1px;
       font-size: 1.4em;
@@ -213,7 +213,7 @@ import { CookieService } from 'ngx-cookie-service';
       transform: translateX(-50%);
       font-size: 1.6em;
       font-weight: 600;
-      color: var(--surface-color);
+      color: var(--text-white);
       font-family: 'Rubik', sans-serif;
     }
 
@@ -229,25 +229,26 @@ import { CookieService } from 'ngx-cookie-service';
       width: 40px;
       height: 40px;
       border-radius: 50%;
-      background-color: var(--accent-color);
-      color: var(--primary-dark);
+      background-color: var(--accent-dark);
+      color: var(--accent-light);
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 1em;
       margin-right: 5px;
-      border: 2px solid var(--text-primary);
+      border: 2px solid var(--accent-light);
       font-family: 'Lora', serif;
     }
 
     .app-user-arrow {
-      font-size: 1.5em;
+      font-size: 2.0em;
       color: var(--accent-light);
+      transform: rotate(90deg);
       transition: transform 0.3s ease;
     }
 
     .app-user-arrow.up {
-      transform: rotate(180deg);
+      transform: rotate(270deg);
     }
 
     .app-user-dropdown {
