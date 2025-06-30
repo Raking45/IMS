@@ -3,12 +3,12 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
-
+import { NgClass } from '@angular/common';
 
 @Component({
   selector: 'app-main-layout',
   standalone: true,
-  imports: [RouterOutlet, RouterLink],
+  imports: [RouterOutlet, RouterLink, NgClass],
   template: `
   <div class="app">
     <!-- Sidebar Navigation -->
@@ -18,15 +18,22 @@ import { CookieService } from 'ngx-cookie-service';
       </div>
 
       <!-- Static Navigation Links -->
-      <a class="app-side-menu-link" routerLink="/">Dashboard</a>
+      <a class="app-side-menu-link dashboard" routerLink="/"><i class="fas fa-tachometer-alt"></i>Dashboard</a>
       
       <!-- Collapsible Section: Category Reports -->
       <div class="app-side-menu-section" (click)="toggleSection($event, 'categoryReports')">
-        <div class="app-side-menu-link">Categories</div>
+        <div class="app-side-menu-link categories"><i class="fas fa-tags"></i>Categories</div>
         @if (sections.categoryReports) {
           <div class="app-side-menu-sub-links">
             @for (link of categoryReports; track link) {
-              <a class="app-side-menu-link app-side-menu-sub-link" [routerLink]="link.url">{{ link.name }}</a>
+              <a class="app-side-menu-link app-side-menu-sub-link" [routerLink]="link.url">
+                <i class="fas" [ngClass]="{
+                  'fa-eye': link.name.toLowerCase().includes('view'),
+                  'fa-plus-circle': link.name.toLowerCase().includes('create'),
+                  'fa-edit': link.name.toLowerCase().includes('update'),
+                  'fa-trash-alt': link.name.toLowerCase().includes('delete')
+                }"></i>
+              {{ link.name }}</a>
             }
           </div>
         }
@@ -34,11 +41,18 @@ import { CookieService } from 'ngx-cookie-service';
 
       <!-- Collapsible Section: Inventory Reports -->
       <div class="app-side-menu-section" (click)="toggleSection($event, 'inventoryReports')">
-        <div class="app-side-menu-link">Inventory</div>
+        <div class="app-side-menu-link inventory"><i class="fas fa-boxes"></i>Inventory</div>
         @if (sections.inventoryReports) {
           <div class="app-side-menu-sub-links">
             @for (link of inventoryReports; track link) {
-              <a class="app-side-menu-link app-side-menu-sub-link" [routerLink]="link.url">{{ link.name }}</a>
+              <a class="app-side-menu-link app-side-menu-sub-link" [routerLink]="link.url">
+              <i class="fas" [ngClass]="{
+                  'fa-eye': link.name.toLowerCase().includes('view'),
+                  'fa-plus-circle': link.name.toLowerCase().includes('create'),
+                  'fa-edit': link.name.toLowerCase().includes('update'),
+                  'fa-trash-alt': link.name.toLowerCase().includes('delete')
+                }"></i>
+              {{ link.name }}</a>
             }
           </div>
         }
@@ -46,11 +60,18 @@ import { CookieService } from 'ngx-cookie-service';
 
       <!-- Collapsible Section: Supplier Reports -->
       <div class="app-side-menu-section" (click)="toggleSection($event, 'supplierReports')">
-        <div class="app-side-menu-link">Supplier</div>
+        <div class="app-side-menu-link suppliers"><i class="fas fa-truck"></i>Supplier</div>
         @if (sections.supplierReports) {
           <div class="app-side-menu-sub-links">
             @for (link of supplierReports; track link) {
-              <a class="app-side-menu-link app-side-menu-sub-link" [routerLink]="link.url">{{ link.name }}</a>
+              <a class="app-side-menu-link app-side-menu-sub-link" [routerLink]="link.url">
+              <i class="fas" [ngClass]="{
+                  'fa-eye': link.name.toLowerCase().includes('view'),
+                  'fa-plus-circle': link.name.toLowerCase().includes('create'),
+                  'fa-edit': link.name.toLowerCase().includes('update'),
+                  'fa-trash-alt': link.name.toLowerCase().includes('delete')
+                }"></i>
+              {{ link.name }}</a>
             }
           </div>
         }
@@ -59,7 +80,7 @@ import { CookieService } from 'ngx-cookie-service';
       <!-- Admin-only: User Management Section -->
       @if (sessionUser.role === 'admin') {
         <div class="app-side-menu-section" (click)="toggleSection($event, 'userManagement')">
-        <div class="app-side-menu-link">User Management</div>
+        <div class="app-side-menu-link users"><i class="fas fa-user-cog"></i>User Management</div>
         @if (sections.userManagement) {
           <div class="app-side-menu-sub-links">
             @for (link of userManagement; track link) {
@@ -79,7 +100,9 @@ import { CookieService } from 'ngx-cookie-service';
 
           <!-- User Profile Dropdown -->
           <div class="app-user-profile" (click)="toggleDropdown()">
-            <div class="app-user-avatar">{{ userInitial }}</div>
+            <div class="app-user-avatar overlay">
+              <i class="fas fa-user"></i>
+              <span class="user-initial">{{ userInitial }}</span></div>
             <div class="app-user-arrow" [class.up]="dropdownVisible">&#10146;</div>
             <div class="app-user-dropdown" [class.show]="dropdownVisible">
               <span>Welcome {{ sessionUser.username }}!</span>
@@ -154,6 +177,18 @@ import { CookieService } from 'ngx-cookie-service';
       transition: background-color 0.2s ease;
     }
 
+    .app-side-menu-link i {
+      margin-right: 16px;
+      width: 18px;
+      text-align: center;
+    }
+
+    .app-side-menu-link.dashboard i { color: #00BCD4 }
+    .app-side-menu-link.categories i { color: #FF9800 }
+    .app-side-menu-link.inventory i { color: #8BC34A }
+    .app-side-menu-link.suppliers i { color: #E91E63 }
+    .app-side-menu-link.users i { color: #9C27B0 }
+
     .app-side-menu-link:hover {
       background-color: var(--primary-light);
       color: var(--text-white);
@@ -164,15 +199,22 @@ import { CookieService } from 'ngx-cookie-service';
     }
 
     .app-side-menu-sub-links {
-      padding-left: 20px;
+      padding-left: 10px;
       background-color: var(--primary-color);
     }
 
     .app-side-menu-sub-link {
-      padding: 8px 20px;
+      padding: 8px 14px;
       font-size: 0.95em;
       background-color: var(--primary-color);
       color: var(--text-white);
+    }
+
+    .app-side-menu-sub-link i {
+      margin-right: 5px;
+      color: var(--accent-light);
+      width: 16px;
+      text-align: center;
     }
 
     .app-side-menu-sub-link:hover {
@@ -230,14 +272,30 @@ import { CookieService } from 'ngx-cookie-service';
       height: 40px;
       border-radius: 50%;
       background-color: var(--accent-dark);
-      color: var(--accent-light);
+      color: var(--text-white);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1em;
+      font-size: 1.2em;
       margin-right: 5px;
-      border: 2px solid var(--accent-light);
+      border: 3px solid var(--accent-light);
       font-family: 'Lora', serif;
+    }
+
+    .app-user-avatar.overlay {
+      position: relative;
+    }
+
+    .app-user-avatar.overlay i {
+      position: absolute;
+      font-size: 1.6em;
+      opacity: 0.3;
+    }
+
+    .app-user-avatar.overlay .user-initial {
+      z-index: 1;
+      font-size: 1.1em;
+      font-weight: bold;
     }
 
     .app-user-arrow {
