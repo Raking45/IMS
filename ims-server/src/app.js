@@ -17,8 +17,27 @@ const connectToDatabase = require('./routes/utils/mongoose'); // Import Connecti
 
 // Importing the index router
 const indexRouter = require('./routes/index');
+
+// Importing the dashboard router
 const dashboardRouter = require('./routes/dashboard');
 
+// Importing the inventory router
+const viewInventoryRouter = require('./routes/inventory/view-inventory-items');
+const createInventoryRouter = require('./routes/inventory/create-inventory-item');
+const deleteInventoryRouter = require('./routes/inventory/delete-inventory-item');
+const updateInventoryRouter = require('./routes/inventory/update-inventory-item');
+
+// Importing the supplier router
+const viewSupplierRouter = require('./routes/supplier/view-suppliers');
+const createSupplierRouter = require('./routes/supplier/create-supplier');
+const deleteSupplierRouter = require('./routes/supplier/delete-supplier');
+const updateSupplierRouter = require('./routes/supplier/update-supplier');
+
+// Importing the category router
+const viewCategoryRouter = require('./routes/categories/view-categories');
+const createCategoryRouter = require('./routes/categories/create-category');
+const deleteCategoryRouter = require('./routes/categories/delete-category');
+const updateCategoryRouter = require('./routes/categories/update-category');
 
 // Connect to MongoDB using Mongoose
 connectToDatabase();  // Initializes DB Connection
@@ -43,6 +62,24 @@ app.use(cookieParser());
 // Routing configuration
 app.use('/api', indexRouter);
 app.use('/api/dashboard', dashboardRouter);
+
+// Inventory Routes
+app.use('/api/reports/inventory/view', viewInventoryRouter);
+app.use('/api/reports/inventory/create', createInventoryRouter);
+app.use('/api/reports/inventory/delete', deleteInventoryRouter);
+app.use('/api/reports/inventory/update', updateInventoryRouter);
+
+// Supplier Routes
+app.use('/api/reports/supplier/view', viewSupplierRouter);
+app.use('/api/reports/supplier/create', createSupplierRouter);
+app.use('/api/reports/supplier/delete', deleteSupplierRouter);
+app.use('/api/reports/supplier/update', updateSupplierRouter);
+
+// Category Routes
+app.use('/api/reports/category/view', viewCategoryRouter);
+app.use('/api/reports/category/create', createCategoryRouter);
+app.use('/api/reports/category/delete', deleteCategoryRouter);
+app.use('/api/reports/category/update', updateCategoryRouter);
 
 // Use the error handling middleware
 app.use(notFoundHandler);

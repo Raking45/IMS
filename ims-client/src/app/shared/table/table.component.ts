@@ -15,7 +15,11 @@ import { CommonModule } from '@angular/common';
               <th class="table-header" (click)="sortableColumns.includes(header) && sortData(header)">
                 <span class="header-content">
                   {{ header }}
-                  <i class="fa" [ngClass]="sortedColumn === header ? (sortDirection === 'asc' ? 'fa-sort-up' : 'fa-sort-down') : 'fa-sort'"></i>
+                  <i
+                    *ngIf="sortableColumns.includes(header)"
+                    [class]="getSortIconClass(header)"
+                    aria-hidden="true"
+                  ></i>
                 </span>
               </th>
             }
@@ -31,28 +35,36 @@ import { CommonModule } from '@angular/common';
           }
         </tbody>
       </table>
-      <div class="pagination">
-        <button class="button button-primary" (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1">Previous</button>
-        <span class="pagination-info">Page {{ currentPage }} of {{ totalPages }}</span>
-        <button class="button button--primary" (click)="changePage(currentPage + 1)" [disabled]="currentPage * recordsPerPage >= data.length">Next</button>
+      <div class="pagination-wrapper">
+        <div class="pagination">
+          <button class="button button-primary" (click)="changePage(currentPage - 1)" [disabled]="currentPage === 1">Previous</button>
+          <span class="pagination-info">Page {{ currentPage }} of {{ totalPages }}</span>
+          <button class="button button-primary" (click)="changePage(currentPage + 1)" [disabled]="currentPage * recordsPerPage >= data.length">Next</button>
+        </div>
       </div>
     </div>
   `,
   styles: [`
   .table-container {
-    width: 100%;
-    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 75%;
+    margin: 2rem auto;
     background-color: var(--surface-color);
-    padding: 1rem;
+    padding: 2rem;
     border-radius: 8px;
     box-shadow: 0 4px 8px var(--shadow-color);
+    overflow-x: auto;
   }
 
   .table-title {
-    margin-bottom: 20px;
+    margin-bottom: 1.5rem;
     font-size: 1.5rem;
     font-weight: 600;
     color: var(--text-primary);
+    text-align: center;
+    width: 100%;
   }
 
   .table {
@@ -61,11 +73,6 @@ import { CommonModule } from '@angular/common';
     background-color: var(--surface-color);
     border-radius: 8px;
     overflow: hidden;
-  }
-
-  .table-head {
-    background-color: var(--primary-light);
-    color: var(--text-white);
   }
 
   .table-head.default {
@@ -98,9 +105,10 @@ import { CommonModule } from '@angular/common';
 
   .table-header {
     font-weight: 600;
+    font-size: 1.2rem;
     cursor: pointer;
     user-select: none;
-  }
+  } 
 
   .table-header:hover {
     background-color: var(--hover-color);
@@ -123,11 +131,19 @@ import { CommonModule } from '@angular/common';
     font-size: 0.95rem;
   }
 
+  .pagination-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 1.5rem;
+  }
+
   .pagination {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: 16px;
+    gap: 3rem;
+    flex-wrap: wrap;
   }
 
   .pagination-info {
@@ -159,6 +175,17 @@ import { CommonModule } from '@angular/common';
   .button-primary:hover:not(disabled) {
     background-color: var(--hover-color);
   }
+
+  @media (max-width: 768px) {
+    .table-header, .table-cell {
+      padding: 8px 10px;
+      font-size: 0.85rem;
+    }
+
+    .table-title {
+      font-size: 1.25rem;
+    }
+  }
   `]
 })
 export class TableComponent implements OnInit, OnChanges {
@@ -167,6 +194,7 @@ export class TableComponent implements OnInit, OnChanges {
   @Input() headers!: string[];
   @Input() recordsPerPage: number = 10; // Set to 10 records per page.
   @Input() sortableColumns!: string[];
+  @Input() columnTypes: { [key: string]: 'alpha' | 'numeric' } = {};
   @Input() headerBackground: 'default' | 'primary' | 'secondary' = 'default';
 
   currentPage: number = 1;
@@ -188,6 +216,21 @@ export class TableComponent implements OnInit, OnChanges {
     const end = start + this.recordsPerPage;
     return this.data.slice(start, end);
   }
+
+  getSortIconClass(header: string): string {
+  if (!this.sortableColumns.includes(header)) return '';
+
+  const type = this.columnTypes[header] || 'alpha'; // default to alpha
+  const direction = this.sortedColumn === header ? this.sortDirection : null;
+
+  if (!direction) return 'fa fa-sort';
+
+  if (type === 'numeric') {
+    return direction === 'asc' ? 'fa fa-sort-numeric-asc' : 'fa fa-sort-numeric-desc';
+  } else {
+    return direction === 'asc' ? 'fa fa-sort-alpha-asc' : 'fa fa-sort-alpha-desc';
+  }
+}
 
   sortData(column: string) {
     if (this.sortedColumn === column) {

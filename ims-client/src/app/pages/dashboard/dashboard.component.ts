@@ -16,6 +16,7 @@ import { environment } from '../../../environments/environment';
         [data]="inventoryItems"
         [headers]="inventoryHeaders"
         [sortableColumns]="['name', 'quantity', 'price']"
+        [columnTypes]="{ name: 'alpha', quantity: 'numeric', price: 'numeric' }"
         [headerBackground]="'default'">
       </app-table>
 
@@ -25,6 +26,7 @@ import { environment } from '../../../environments/environment';
         [data]="categories"
         [headers]="categoryHeaders"
         [sortableColumns]="['categoryName']"
+        [columnTypes]="{ categoryName: 'alpha' }"
         [headerBackground]="'default'">
       </app-table>
 
@@ -34,6 +36,7 @@ import { environment } from '../../../environments/environment';
         [data]="suppliers"
         [headers]="supplierHeaders"
         [sortableColumns]="['supplierName', 'contactInformation']"
+        [columnTypes]="{ supplierName: 'alpha', contactInformation: 'alpha'}"
         [headerBackground]="'default'">
       </app-table>
     </div>
@@ -55,8 +58,8 @@ export class DashboardComponent implements OnInit {
   suppliers: any[] = [];
 
   inventoryHeaders = ['_id', 'name', 'description', 'quantity', 'price', 'categoryId', 'supplierId', 'dateCreated', 'dateModified'];
-  categoryHeaders = ['categoryId', 'categoryName', 'description'];
-  supplierHeaders = ['supplierName', 'contactInformation', 'address'];
+  categoryHeaders = ['_id', 'categoryId', 'categoryName', 'description'];
+  supplierHeaders = ['_id', 'supplierName', 'contactInformation', 'address'];
 
   constructor(private http: HttpClient) {}
 
