@@ -5,6 +5,17 @@ import { CommonModule } from '@angular/common';
 // Reactive form-related modules and utilities
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
+// ✅ Export the interface so it can be used in other components
+export interface FormInputConfig {
+  label: string;
+  name: string;
+  type: 'text' | 'email' | 'password' | 'textarea' | 'select' | 'number';
+  placeholder?: string;
+  required?: boolean;
+  options?: { label: string; value: any }[];
+  errorMessage?: string;
+}
+
 @Component({
   selector: 'app-form',
   standalone: true, // This component doesn't rely on an NgModule
@@ -163,16 +174,8 @@ export class FormComponent implements OnInit, OnChanges {
   // Submit button label
   @Input() submitLabel: string = 'Submit';
   
-  // Field configurations passed in from parent
-  @Input() inputs: {
-    label: string;
-    name: string;
-    type: 'text' | 'email' | 'password' | 'textarea' | 'select' | 'number';
-    placeholder?: string;
-    required?: boolean;
-    options?: { label: string; value: any } [];
-    errorMessage?: string;
-  } [] = [];
+  // ✅ Use the shared interface here too
+  @Input() inputs: FormInputConfig[] = [];
 
   // Emits form values to parent component on submit
   @Output() formSubmit = new EventEmitter<any>();
