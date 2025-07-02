@@ -42,21 +42,28 @@ export class CreateInventoryItemComponent {
   constructor(private http: HttpClient) {}
 
   handleSubmit(formData: any): void {
-    // Build the exact URL your tests expect
     const url = `${environment.apiBaseUrl}/api/reports/inventory/create`;
     console.log('POSTing to:', url, formData);
 
-    // Convert the string inputs back to numbers
     const payload = {
       ...formData,
       quantity: Number(formData.quantity),
-      price:    Number(formData.price)
+      price: Number(formData.price)
     };
 
-    // Fire off the POST
     this.http.post(url, payload).subscribe({
-      next: () => this.message = 'Inventory item created successfully!',
-      error: () => this.message = 'Failed to create inventory item.'
+      next: () => {
+        this.message = `✅ "${formData.name}" has been added to the inventory.`;
+      },
+      error: (err) => {
+        if (err.status === 409) {
+          this.message = `⚠️ An item with ID "${formData._id}" or name "${formData.name}" already exists.`;
+        } else if (err.status === 400) {
+          this.message = '⚠️ Missing or invalid fields. Please review the form.';
+        } else {
+          this.message = '❌ Something went wrong. Please try again.';
+        }
+      }
     });
   }
 }

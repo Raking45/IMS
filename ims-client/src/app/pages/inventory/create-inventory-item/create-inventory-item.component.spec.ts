@@ -1,26 +1,29 @@
 // src/app/pages/inventory/create-inventory-item/create-inventory-item.component.spec.ts
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { HttpClientModule } from '@angular/common/http';
-import { of, throwError } from 'rxjs';
-
 import { CreateInventoryItemComponent } from './create-inventory-item.component';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { environment } from '../../../../environments/environment';
 
 describe('CreateInventoryItemComponent', () => {
   let component: CreateInventoryItemComponent;
   let fixture: ComponentFixture<CreateInventoryItemComponent>;
+  let httpMock: HttpTestingController;
 
-  // Hard-coded to match exactly what handleSubmit() builds
-  const endpoint = 'http://localhost:3000/api/reports/inventory/create';
+  const endpoint = `${environment.apiBaseUrl}/api/reports/inventory/create`;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CreateInventoryItemComponent, HttpClientModule]
+      imports: [CreateInventoryItemComponent, HttpClientTestingModule]
     }).compileComponents();
 
     fixture = TestBed.createComponent(CreateInventoryItemComponent);
     component = fixture.componentInstance;
+    httpMock = TestBed.inject(HttpTestingController);
+    fixture.detectChanges();
   });
+
+  afterEach(() => httpMock.verify());
 
   it('should create the component', () => {
     expect(component).toBeTruthy();
@@ -34,11 +37,6 @@ describe('CreateInventoryItemComponent', () => {
   });
 
   it('should post converted payload and set success message', () => {
-    // 1) Spy on the component's own HttpClient instance
-    const httpPostSpy = spyOn((component as any).http, 'post')
-      .and.returnValue(of({ message: 'Created' }));
-    
-    // 2) Prepare form data (strings come from the form)
     const mockForm = {
       _id: 'item001',
       name: 'New Item',
@@ -49,26 +47,21 @@ describe('CreateInventoryItemComponent', () => {
       supplierId: 'sup001'
     };
 
-    // 3) Call the method under test
     component.handleSubmit(mockForm);
 
-    // 4) Verify the HTTP call with converted numeric payload
-    expect(httpPostSpy).toHaveBeenCalledWith(endpoint, {
+    const req = httpMock.expectOne(endpoint);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual({
       ...mockForm,
       quantity: 10,
       price: 15.5
     });
 
-    // 5) Verify that the success path set the message
-    expect(component.message).toBe('Inventory item created successfully!');
+    req.flush({ message: 'Created' });
+    expect(component.message).toBe(`✅ "${mockForm.name}" has been added to the inventory.`);
   });
 
-  it('should show error message on HTTP failure', () => {
-    // 1) Spy to force an error from HttpClient.post()
-    const httpPostSpy = spyOn((component as any).http, 'post')
-      .and.returnValue(throwError(() => new Error('Network error')));
-    
-    // 2) Prepare form data
+  it('should show error message on HTTP failure (409)', () => {
     const mockForm = {
       _id: 'item002',
       name: 'Error Item',
@@ -79,17 +72,49 @@ describe('CreateInventoryItemComponent', () => {
       supplierId: 'sup002'
     };
 
-    // 3) Call the method under test
     component.handleSubmit(mockForm);
 
-    // 4) Ensure the HTTP call was still attempted with correct payload
-    expect(httpPostSpy).toHaveBeenCalledWith(endpoint, {
-      ...mockForm,
-      quantity: 5,
-      price: 12
-    });
+    const req = httpMock.expectOne(endpoint);
+    req.flush({}, { status: 409, statusText: 'Conflict' });
 
-    // 5) Verify that the error path set the message
-    expect(component.message).toBe('Failed to create inventory item.');
+    expect(component.message).toBe(`⚠️ An item with ID "${mockForm._id}" or name "${mockForm.name}" already exists.`);
+  });
+
+  it('should show error message on HTTP failure (400)', () => {
+    const mockForm = {
+      _id: 'item003',
+      name: 'Bad Data',
+      description: '',
+      quantity: '',
+      price: '',
+      categoryId: '',
+      supplierId: ''
+    };
+
+    component.handleSubmit(mockForm);
+
+    const req = httpMock.expectOne(endpoint);
+    req.flush({}, { status: 400, statusText: 'Bad Request' });
+
+    expect(component.message).toBe('⚠️ Missing or invalid fields. Please review the form.');
+  });
+
+  it('should show fallback error message for unknown error', () => {
+    const mockForm = {
+      _id: 'item004',
+      name: 'Server Crash',
+      description: 'Causes 500',
+      quantity: '1',
+      price: '99.99',
+      categoryId: 'catX',
+      supplierId: 'supX'
+    };
+
+    component.handleSubmit(mockForm);
+
+    const req = httpMock.expectOne(endpoint);
+    req.flush({}, { status: 500, statusText: 'Internal Server Error' });
+
+    expect(component.message).toBe('❌ Something went wrong. Please try again.');
   });
 });
