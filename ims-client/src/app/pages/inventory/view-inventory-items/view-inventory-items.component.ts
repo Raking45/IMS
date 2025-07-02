@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormComponent } from '../../../shared/form/form.component';
 import { environment } from '../../../../environments/environment';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { TableComponent } from '../../../shared/table/table.component';
@@ -8,32 +7,30 @@ import { TableComponent } from '../../../shared/table/table.component';
 @Component({
   selector: 'app-view-inventory-items',
   standalone: true,
-  imports: [CommonModule, HttpClientModule, TableComponent, FormComponent],
+  imports: [CommonModule, HttpClientModule, TableComponent],
   template: `
-  <div class="view-inventory-container">
-    <app-form
-      [title]="'View Inventory by Id'"
-      [submitLabel]="'Generate Report'"
-      [inputs]="formFields"
-      (formSubmit)="handleSubmit($event)">
-    </app-form>
-
+  <div class="inv-view-container">
+    <h2>All Inventory Items</h2>
     <app-table
-        *ngIf="inventoryItems.length > 0"
-        [title]="'Inventory Items'"
-        [data]="inventoryItems"
-        [headers]="inventoryHeaders"
-        [sortableColumns]="['name', 'quantity', 'price']"
-        [columnTypes]="{ name: 'alpha', quantity: 'numeric', price: 'numeric' }"
-        [headerBackground]="'default'">
-      </app-table>
+      *ngIf="inventoryItems.length > 0"
+      [title]="'Inventory Items'"
+      [data]="inventoryItems"
+      [headers]="inventoryHeaders"
+      [sortableColumns]="['Name', 'Quantity', 'Price']"
+      [columnTypes]="{ Name: 'alpha', Quantity: 'numeric', Price: 'numeric' }"
+      [headerBackground]="'default'">
+    </app-table>
   </div>
   `,
-  styles: [``]
+  styles: [`
+    .inv-view-container {
+      text-align: center;
+    }
+    `]
 })
 export class ViewInventoryItemsComponent implements OnInit {
   inventoryItems: any[] = [];
-  inventoryHeaders = ['_id', 'name', 'description', 'quantity', 'price', 'categoryId', 'supplierId', 'dateCreated', 'dateModified'];
+  inventoryHeaders = ['Id', 'Name', 'Description', 'Quantity', 'Price', 'Category Id', 'Supplier Id', 'Date Created', 'Date Modified'];
   formFields: any[] = [];
 
   allInventory: any[] = [];
@@ -41,31 +38,23 @@ export class ViewInventoryItemsComponent implements OnInit {
   constructor(private http: HttpClient) {}
 
   ngOnInit(): void {
-    // Fetch inventory list to populate dropdown
-    this.http.get<any[]>(`${environment.apiBaseUrl}/api/reports/inventory/view`).subscribe(data => {
-      this.allInventory = data;
-
-      this.formFields = [
-        {
-          name: '_id',
-          label: 'Select Inventory Id',
-          placeholder: 'Click for Dropdown List',
-          type: 'select' as const,
-          required: true,
-          options: data.map(item => ({
-            label: `${item._id} - ${item.name}`,
-            value: item._id
-          }))
-        }
-      ];
-    });
+    this.loadInventory();
   }
 
-  // Fetch inventory _id to populate table
-  handleSubmit(formData: any) {
-    const id = formData._id;
-    this.http.get<any[]>(`${environment.apiBaseUrl}/api/reports/inventory/view/${id}`).subscribe(data => {
-      this.inventoryItems = Array.isArray(data) ? data : [data];
+  loadInventory() {
+    this.http.get<any[]>(`${environment.apiBaseUrl}/api/reports/inventory/view`).subscribe(data => {
+      this.inventoryItems = data;
+      for (let data of this.inventoryItems) {
+        data['Id']=data['_id'];
+        data['Name']=data['name'];
+        data['Description']=data['description'];
+        data['Quantity']=data['quantity'];
+        data['Price']=data['price'];
+        data['Category Id']=data['categoryId'];
+        data['Supplier Id']=data['supplierId'];
+        data['Date Created']=data['dateCreated'];
+        data['Date Modified']=data['dateModified'];
+      }
     });
   }
 }

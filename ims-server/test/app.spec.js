@@ -9,7 +9,7 @@
 const request = require('supertest');
 const express = require('express');
 const app = require('../src/app');
-const { errorHandler } = require('../src/error-handler');
+const { errorHandler } = require('../src/routes/utils/error-handler');
 
 // Test cases
 describe('app.js', () => {
@@ -54,5 +54,12 @@ describe('app.js', () => {
       status: 404,
       message: 'Not Found'
     }));
+  });
+
+  const mongoose = require('mongoose');
+
+  // Clean up after all tests
+  afterAll(async () => {
+    await mongoose.connection.close();
   });
 });

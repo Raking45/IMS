@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { TableComponent } from './table.component';
 
 describe('TableComponent', () => {
@@ -14,6 +13,13 @@ describe('TableComponent', () => {
 
     fixture = TestBed.createComponent(TableComponent);
     component = fixture.componentInstance;
+
+    // ✅ Set required @Input()s
+    component.data = []; // Prevents undefined access
+    component.headers = ['Id', 'Name', 'Quantity'];
+    component.sortableColumns = [];
+    component.columnTypes = {};
+    
     fixture.detectChanges();
   });
 

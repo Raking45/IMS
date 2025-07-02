@@ -167,7 +167,7 @@ export class FormComponent implements OnInit, OnChanges {
   @Input() inputs: {
     label: string;
     name: string;
-    type: 'text' | 'email' | 'password' | 'textarea' | 'select';
+    type: 'text' | 'email' | 'password' | 'textarea' | 'select' | 'number';
     placeholder?: string;
     required?: boolean;
     options?: { label: string; value: any } [];
