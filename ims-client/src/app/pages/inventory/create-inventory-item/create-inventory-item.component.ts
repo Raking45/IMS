@@ -2,14 +2,14 @@
 
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http'; // <- keep this for the service
 import { FormComponent, FormInputConfig } from '../../../shared/form/form.component';
 import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-create-inventory-item',
   standalone: true,
-  imports: [CommonModule, HttpClientModule, FormComponent],
+  imports: [CommonModule, FormComponent], // ❌ removed HttpClientModule
   template: `
     <div class="create-inventory-container">
       <app-form
@@ -25,18 +25,16 @@ import { environment } from '../../../../environments/environment';
   styles: [``]
 })
 export class CreateInventoryItemComponent {
-  // Field definitions for the shared form component
   formFields: FormInputConfig[] = [
-    { name: '_id',         label: 'ID',           placeholder: 'Enter ID',           type: 'text',     required: true },
-    { name: 'name',        label: 'Name',         placeholder: 'Enter name',         type: 'text',     required: true },
-    { name: 'description', label: 'Description',  placeholder: 'Enter description',  type: 'textarea'                },
-    { name: 'quantity',    label: 'Quantity',     placeholder: 'Enter quantity',     type: 'number',   required: true },
-    { name: 'price',       label: 'Price',        placeholder: 'Enter price',        type: 'number',   required: true },
-    { name: 'categoryId',  label: 'Category ID',  placeholder: 'Enter category ID',  type: 'text',     required: true },
-    { name: 'supplierId',  label: 'Supplier ID',  placeholder: 'Enter supplier ID',  type: 'text',     required: true }
+    { name: '_id', label: 'ID', placeholder: 'Enter ID', type: 'text', required: true },
+    { name: 'name', label: 'Name', placeholder: 'Enter name', type: 'text', required: true },
+    { name: 'description', label: 'Description', placeholder: 'Enter description', type: 'textarea' },
+    { name: 'quantity', label: 'Quantity', placeholder: 'Enter quantity', type: 'number', required: true },
+    { name: 'price', label: 'Price', placeholder: 'Enter price', type: 'number', required: true },
+    { name: 'categoryId', label: 'Category ID', placeholder: 'Enter category ID', type: 'text', required: true },
+    { name: 'supplierId', label: 'Supplier ID', placeholder: 'Enter supplier ID', type: 'text', required: true }
   ];
 
-  // Message shown after submission succeeds or fails
   message = '';
 
   constructor(private http: HttpClient) {}
@@ -52,16 +50,14 @@ export class CreateInventoryItemComponent {
     };
 
     this.http.post(url, payload).subscribe({
-      next: () => {
-        this.message = `✅ "${formData.name}" has been added to the inventory.`;
-      },
+      next: () => this.message = '✅ Inventory item created successfully!',
       error: (err) => {
-        if (err.status === 409) {
-          this.message = `⚠️ An item with ID "${formData._id}" or name "${formData.name}" already exists.`;
-        } else if (err.status === 400) {
-          this.message = '⚠️ Missing or invalid fields. Please review the form.';
+        if (err.status === 400) {
+          this.message = '⚠️ Validation error. Please check your input.';
+        } else if (err.status === 409) {
+          this.message = '⚠️ Duplicate item ID. Please use a unique ID.';
         } else {
-          this.message = '❌ Something went wrong. Please try again.';
+          this.message = '❌ Failed to create inventory item.';
         }
       }
     });

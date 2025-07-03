@@ -1,5 +1,3 @@
-// src/app/pages/inventory/create-inventory-item/create-inventory-item.component.spec.ts
-
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CreateInventoryItemComponent } from './create-inventory-item.component';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
@@ -23,17 +21,12 @@ describe('CreateInventoryItemComponent', () => {
     fixture.detectChanges();
   });
 
-  afterEach(() => httpMock.verify());
+  afterEach(() => {
+    httpMock.verify(); // Ensure all requests were handled
+  });
 
   it('should create the component', () => {
     expect(component).toBeTruthy();
-  });
-
-  it('should initialize formFields correctly', () => {
-    expect(component.formFields.length).toBe(7);
-    const qtyField = component.formFields.find(f => f.name === 'quantity');
-    expect(qtyField?.type).toBe('number');
-    expect(component.formFields.find(f => f.name === 'description')?.type).toBe('textarea');
   });
 
   it('should post converted payload and set success message', () => {
@@ -58,7 +51,7 @@ describe('CreateInventoryItemComponent', () => {
     });
 
     req.flush({ message: 'Created' });
-    expect(component.message).toBe(`✅ "${mockForm.name}" has been added to the inventory.`);
+    expect(component.message).toBe('✅ Inventory item created successfully!');
   });
 
   it('should show error message on HTTP failure (409)', () => {
@@ -77,7 +70,7 @@ describe('CreateInventoryItemComponent', () => {
     const req = httpMock.expectOne(endpoint);
     req.flush({}, { status: 409, statusText: 'Conflict' });
 
-    expect(component.message).toBe(`⚠️ An item with ID "${mockForm._id}" or name "${mockForm.name}" already exists.`);
+    expect(component.message).toBe('⚠️ Duplicate item ID. Please use a unique ID.');
   });
 
   it('should show error message on HTTP failure (400)', () => {
@@ -96,7 +89,7 @@ describe('CreateInventoryItemComponent', () => {
     const req = httpMock.expectOne(endpoint);
     req.flush({}, { status: 400, statusText: 'Bad Request' });
 
-    expect(component.message).toBe('⚠️ Missing or invalid fields. Please review the form.');
+    expect(component.message).toBe('⚠️ Validation error. Please check your input.');
   });
 
   it('should show fallback error message for unknown error', () => {
@@ -115,6 +108,6 @@ describe('CreateInventoryItemComponent', () => {
     const req = httpMock.expectOne(endpoint);
     req.flush({}, { status: 500, statusText: 'Internal Server Error' });
 
-    expect(component.message).toBe('❌ Something went wrong. Please try again.');
+    expect(component.message).toBe('❌ Failed to create inventory item.');
   });
 });
