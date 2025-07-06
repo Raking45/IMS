@@ -15,6 +15,7 @@ import { UpdateSupplierComponent } from './pages/supplier/update-supplier/update
 import { ViewSuppliersComponent } from './pages/supplier/view-suppliers/view-suppliers.component';
 
 
+
 // Export the Routes
 export const routes: Routes = [
   {
