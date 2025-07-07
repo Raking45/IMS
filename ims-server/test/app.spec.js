@@ -55,11 +55,4 @@ describe('app.js', () => {
       message: 'Not Found'
     }));
   });
-
-  const mongoose = require('mongoose');
-
-  // Clean up after all tests
-  afterAll(async () => {
-    await mongoose.connection.close();
-  });
 });

@@ -397,9 +397,10 @@ export class MainLayoutComponent {
   // Inventory Report Links
   inventoryReports = [
     { name: 'View Inventory Items', url: '/reports/inventory/view' },
+    { name: 'View Inventory Item by Id', url: '/reports/inventory/view-inventory-item-by-id' },
     { name: 'Create Inventory Item', url: '/reports/inventory/create-inventory' },
     { name: 'Update Inventory Item', url: '/reports/inventory/update-inventory' },
-    { name: 'Delete Inventory Item', url: '/reports/inventory/delete-inventory' }
+    { name: 'Delete Inventory Item', url: '/reports/inventory/delete-inventory' },
   ];
 
   // Supplier Report Links
