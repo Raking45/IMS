@@ -13,6 +13,8 @@ import { CreateSupplierComponent } from './pages/supplier/create-supplier/create
 import { DeleteSupplierComponent } from './pages/supplier/delete-supplier/delete-supplier.component';
 import { UpdateSupplierComponent } from './pages/supplier/update-supplier/update-supplier.component';
 import { ViewSuppliersComponent } from './pages/supplier/view-suppliers/view-suppliers.component';
+import { ViewInventoryItemByIdComponent } from './pages/inventory/view-inventory-item-by-id/view-inventory-item-by-id.component';
+
 
 
 // Export the Routes
@@ -37,6 +39,7 @@ export const routes: Routes = [
       { path: 'reports/inventory/delete-inventory', component: DeleteInventoryItemComponent},
       { path: 'reports/inventory/update-inventory', component: UpdateInventoryItemComponent},
       { path: 'reports/inventory/view', component: ViewInventoryItemsComponent},
+      { path: 'reports/inventory/view-inventory-item-by-id', component: ViewInventoryItemByIdComponent},
 
       // Supplier Routes
       { path: 'reports/suppliers/create-supplier', component: CreateSupplierComponent},
