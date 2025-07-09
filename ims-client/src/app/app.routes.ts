@@ -14,38 +14,49 @@ import { DeleteSupplierComponent } from './pages/supplier/delete-supplier/delete
 import { UpdateSupplierComponent } from './pages/supplier/update-supplier/update-supplier.component';
 import { ViewSuppliersComponent } from './pages/supplier/view-suppliers/view-suppliers.component';
 import { ViewInventoryItemByIdComponent } from './pages/inventory/view-inventory-item-by-id/view-inventory-item-by-id.component';
-
-
+import { UserManagementComponent } from './pages/user-management/user-management.component';
+import { UsersComponent } from './pages/user-management/users/users.component';
+import { UserCreateComponent } from './pages/user-management/user-create/user-create.component';
+import { UserDetailsComponent } from './pages/user-management/user-details/user-details.component';
+import { authGuard } from './pages/security/auth.guard';
+import { SigninComponent } from './pages/security/signin/signin.component';
+import { UnauthorizedComponent } from './pages/security/unauthorized/unauthorized.component';
 
 // Export the Routes
 export const routes: Routes = [
   {
     path: '',
     component: MainLayoutComponent,
+    canActivate: [authGuard],
     children: [
-      {
-        path: '',
-        component: DashboardComponent
-      },
-      
-      // Category Routes
-      { path: 'reports/categories/create-category', component: CreateCategoryComponent },
-      { path: 'reports/categories/delete-category', component: DeleteCategoryComponent },
-      { path: 'reports/categories/update-category', component: UpdateCategoryComponent},
-      { path: 'reports/categories/view', component: ViewCategoriesComponent},
+      { path: '', component: DashboardComponent, data: { roles: ['admin', 'manager', 'staff', 'viewer'] } },
 
-      // Inventory Routes
-      { path: 'reports/inventory/create-inventory', component: CreateInventoryItemComponent},
-      { path: 'reports/inventory/delete-inventory', component: DeleteInventoryItemComponent},
-      { path: 'reports/inventory/update-inventory', component: UpdateInventoryItemComponent},
-      { path: 'reports/inventory/view', component: ViewInventoryItemsComponent},
-      { path: 'reports/inventory/view-inventory-item-by-id', component: ViewInventoryItemByIdComponent},
+      // User Management (Admins only)
+      { path: 'user-management', component: UserManagementComponent, data: { roles: ['admin'] } },
+      { path: 'user-management/users', component: UsersComponent, data: { roles: ['admin'] } },
+      { path: 'user-management/users/new', component: UserCreateComponent, data: { roles: ['admin'] } },
+      { path: 'user-management/users/:id', component: UserDetailsComponent, data: { roles: ['admin'] } },
 
-      // Supplier Routes
-      { path: 'reports/suppliers/create-supplier', component: CreateSupplierComponent},
-      { path: 'reports/suppliers/delete-supplier', component: DeleteSupplierComponent},
-      { path: 'reports/suppliers/update-supplier', component: UpdateSupplierComponent},
-      { path: 'reports/suppliers/view', component: ViewSuppliersComponent}
+      // Categories
+      { path: 'reports/categories/create-category', component: CreateCategoryComponent, data: { roles: ['admin', 'manager'] } },
+      { path: 'reports/categories/delete-category', component: DeleteCategoryComponent, data: { roles: ['admin', 'manager'] } },
+      { path: 'reports/categories/update-category', component: UpdateCategoryComponent, data: { roles: ['admin', 'manager'] } },
+      { path: 'reports/categories/view', component: ViewCategoriesComponent, data: { roles: ['admin', 'manager', 'staff', 'viewer'] } },
+
+      // Inventory
+      { path: 'reports/inventory/create-inventory', component: CreateInventoryItemComponent, data: { roles: ['admin', 'manager'] } },
+      { path: 'reports/inventory/delete-inventory', component: DeleteInventoryItemComponent, data: { roles: ['admin', 'manager'] } },
+      { path: 'reports/inventory/update-inventory', component: UpdateInventoryItemComponent, data: { roles: ['admin', 'manager'] } },
+      { path: 'reports/inventory/view', component: ViewInventoryItemsComponent, data: { roles: ['admin', 'manager', 'staff', 'viewer'] } },
+      { path: 'reports/inventory/view-inventory-item-by-id', component: ViewInventoryItemByIdComponent, data: { roles: ['admin', 'manager', 'staff', 'viewer'] } },
+
+      // Suppliers
+      { path: 'reports/suppliers/create-supplier', component: CreateSupplierComponent, data: { roles: ['admin', 'manager'] } },
+      { path: 'reports/suppliers/delete-supplier', component: DeleteSupplierComponent, data: { roles: ['admin', 'manager'] } },
+      { path: 'reports/suppliers/update-supplier', component: UpdateSupplierComponent, data: { roles: ['admin', 'manager'] } },
+      { path: 'reports/suppliers/view', component: ViewSuppliersComponent, data: { roles: ['admin', 'manager', 'staff', 'viewer'] } },
     ]
-  }
+  },
+  { path: 'signin', component: SigninComponent },
+  { path: 'unauthorized', component: UnauthorizedComponent } 
 ];

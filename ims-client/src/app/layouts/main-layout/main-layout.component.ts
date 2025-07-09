@@ -1,6 +1,4 @@
 import { Component, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { environment } from '../../../environments/environment';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { NgClass } from '@angular/common';
@@ -18,7 +16,8 @@ import { NgClass } from '@angular/common';
       </div>
 
       <!-- Static Navigation Links -->
-      <a class="app-side-menu-link dashboard" routerLink="/"><i class="fas fa-tachometer-alt"></i>Dashboard</a>
+      <a class="app-side-menu-link dashboard" routerLink="/" (click)="closeAllSections()">
+      <i class="fas fa-tachometer-alt"></i>Dashboard</a>
       
       <!-- Collapsible Section: Category Reports -->
       <div class="app-side-menu-section" (click)="toggleSection($event, 'categoryReports')">
@@ -84,7 +83,14 @@ import { NgClass } from '@angular/common';
         @if (sections.userManagement) {
           <div class="app-side-menu-sub-links">
             @for (link of userManagement; track link) {
-              <a class="app-side-menu-link app-side-menu-sub-link" [routerLink]="link.url">{{ link.name }}</a>
+              <a class="app-side-menu-link app-side-menu-sub-link" [routerLink]="link.url">
+              <i class="fas" [ngClass]="{
+                  'fa-eye': link.name.toLowerCase().includes('view'),
+                  'fa-plus-circle': link.name.toLowerCase().includes('create'),
+                  'fa-edit': link.name.toLowerCase().includes('update'),
+                  'fa-trash-alt': link.name.toLowerCase().includes('delete')
+                }"></i>
+                {{ link.name }}</a>
             }
           </div>
         }
@@ -141,7 +147,7 @@ import { NgClass } from '@angular/common';
     }
 
     .app-side-menu {
-      width: 250px;
+      width: 275px;
       background-color: var(--primary-dark);
       color: var(--text-white);
       height: 100vh;
@@ -223,7 +229,7 @@ import { NgClass } from '@angular/common';
     }
 
     .app-main-content {
-      margin-left: 250px;
+      margin-left: 275px;
       flex: 1;
       display: flex;
       flex-direction: column;
@@ -375,15 +381,14 @@ export class MainLayoutComponent {
   sections: any = {
     inventoryReports: false,
     supplierReports: false,
+    categoryReports: false,
     userManagement: false
   };
 
   // Admin Menu Items
   userManagement = [
-    { name: 'Users', url: '/user-management/users' },
-    { name: 'Create User', url: '/user-management/users/create-user' },
-    { name: 'Update User', url: '/user-management/users/update-user' },
-    { name: 'Delete User', url: '/user-management/users/delete-user'}
+    { name: 'View Users', url: '/user-management/users' },
+    { name: 'Create User', url: '/user-management/users/new' },
   ];
 
   // Category Report Links
@@ -391,7 +396,7 @@ export class MainLayoutComponent {
     { name: 'View Categories', url: '/reports/categories/view' },
     { name: 'Create Category', url: '/reports/categories/create-category' },
     { name: 'Update Category', url: '/reports/categories/update-category' },
-    { name: 'Delete Category', url: '/reports/categories/delete-category' }
+    { name: 'Delete Category', url: '/reports/categories/delete-category' },
   ];
 
   // Inventory Report Links
@@ -408,7 +413,7 @@ export class MainLayoutComponent {
     { name: 'View Suppliers', url: '/reports/suppliers/view' },
     { name: 'Create Supplier', url: '/reports/suppliers/create-supplier' },
     { name: 'Update Supplier', url: '/reports/suppliers/update-supplier' },
-    { name: 'Delete Supplier', url: '/reports/suppliers/delete-supplier' }
+    { name: 'Delete Supplier', url: '/reports/suppliers/delete-supplier' },
   ];
 
   constructor(private cookieService: CookieService, private router: Router) {
@@ -422,11 +427,23 @@ export class MainLayoutComponent {
     this.dropdownVisible = !this.dropdownVisible;
   }
 
+  // Toggle Collapsible Menu Sections when Dashboard Clicked
+  closeAllSections() {
+    for (let key in this.sections) {
+      this.sections[key] = false;
+    }
+  }
+
   // Toggle Collapsible Menu Sections
   toggleSection(event: MouseEvent, section: string) {
     const target = event.target as HTMLElement;
     if (target.classList.contains('app-side-menu-link') && !target.classList.contains('app-side-menu-sub-link')) {
-      this.sections[section] = !this.sections[section];
+      for (let key in this.sections) {
+        // Close all sections first
+        this.sections[key] = false;
+      }
+      // Then toggle the clicked section
+      this.sections[section] = true;
     }
   }
 
