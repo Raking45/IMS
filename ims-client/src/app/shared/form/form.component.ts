@@ -14,6 +14,7 @@ export interface FormInputConfig {
   required?: boolean;
   options?: { label: string; value: any }[];
   errorMessage?: string;
+  value?: any; // Optional initial value for the input
 }
 
 @Component({
