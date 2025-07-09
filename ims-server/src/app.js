@@ -15,11 +15,16 @@ const { notFoundHandler, errorHandler } = require('./routes/utils/error-handler'
 const connectToDatabase = require('./routes/utils/mongoose'); // Import Connection
 
 
+
 // Importing the index router
 const indexRouter = require('./routes/index');
 
 // Importing the dashboard router
 const dashboardRouter = require('./routes/dashboard');
+
+// Importing User Management router
+const usersRouter = require('./routes/users');
+const securityRouter = require("./routes/security");
 
 // Importing the inventory router
 const viewInventoryRouter = require('./routes/inventory/view-inventory-items');
@@ -62,6 +67,10 @@ app.use(cookieParser());
 // Routing configuration
 app.use('/api', indexRouter);
 app.use('/api/dashboard', dashboardRouter);
+
+// User Routes
+app.use('/api/users', usersRouter);
+app.use('/api/security', securityRouter);
 
 // Inventory Routes
 app.use('/api/reports/inventory/view', viewInventoryRouter);

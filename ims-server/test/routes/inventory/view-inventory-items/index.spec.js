@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const app = require('../../../../src/app');
 
 describe('GET /api/reports/inventory/view (non-destructive)', () => {
-
+  // Look at and change due to deprecation/memory leak
   beforeAll(async () => {
     if (mongoose.connection.readyState === 0) {
       await mongoose.connect(process.env.MONGO_URL || 'mongodb://localhost:27017/test-db', {

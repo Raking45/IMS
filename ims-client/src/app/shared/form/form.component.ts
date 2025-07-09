@@ -78,94 +78,7 @@ export interface FormInputConfig {
   </form>
   `,
   styles: [`
-  /* Form wrapper styles */
-  .form-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    max-width: 75%;
-    margin: 2rem auto;
-    padding: 2rem;
-    background-color: var(--surface-color);
-    border-radius: 8px;
-    box-shadow: 0 4px 8px var(--shadow-color);
-  }
-
-  /* Form title */
-  .form-title {
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin-bottom: 1.5rem;
-    color: var(--text-primary);
-    text-align: center;
-    width: 100%;
-  }
-
-  /* Each form field */
-  .form-group {
-    width: 100%;
-    margin-bottom: 1.25rem;
-    color: var(--text-secondary);
-  }
-
-  /* Field label */
-  .form-label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-weight: 500;
-    color: var(--text-secondary);
-  }
-
-  /* Input, textarea, and select styles */
-  .form-input {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-    font-size: 1rem;
-    font-family: 'Rubik', sans-serif;
-    background-color: var(--surface-color);
-    color: var(--text-primary);
-  }
-
-  /* Button wrapper to align button to the right */
-  .form-actions {
-    width: 100%;
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 1rem;
-  }
-
-  /* Submit button styling */
-  .form-button {
-    padding: 10px 20px;
-    background-color: var(--primary-color);
-    color: var(--text-white);
-    border: none;
-    border-radius: 4px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background-color 0.2s ease-in-out;
-  }
-
-  /* Disabled button state */
-  .form-button:disabled {
-    background-color: var(--primary-light);
-    cursor: not-allowed;
-    opacity: 0.6;
-  }
-
-  /* Hover state for active buttons */
-  .form-button:hover:not(:disabled) {
-    background-color: var(--hover-color);
-  }
-
-  /* Error message styling */
-  .error-message {
-    margin-top: 4px;
-    color: var(--error-color);
-    font-size: 0.875rem;
-  }
+  
   `]
 })
 export class FormComponent implements OnInit, OnChanges {
@@ -175,7 +88,7 @@ export class FormComponent implements OnInit, OnChanges {
   // Submit button label
   @Input() submitLabel: string = 'Submit';
   
-  // ✅ Use the shared interface here too
+  // Use the shared interface here too
   @Input() inputs: FormInputConfig[] = [];
 
   // Emits form values to parent component on submit
