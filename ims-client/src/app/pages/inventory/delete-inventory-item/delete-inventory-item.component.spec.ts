@@ -1,16 +1,14 @@
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { DeleteInventoryItemComponent } from './delete-inventory-item.component';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { environment } from '../../../../environments/environment';
-import { ActivatedRoute } from '@angular/router';
-import { of } from 'rxjs';
-import { fakeAsync, tick } from '@angular/core/testing';
-
 
 describe('DeleteInventoryItemComponent', () => {
   let component: DeleteInventoryItemComponent;
   let fixture: ComponentFixture<DeleteInventoryItemComponent>;
   let httpMock: HttpTestingController;
+
 
   const id = 'item001';
   const endpoint = `${environment.apiBaseUrl}/api/reports/inventory/delete-inventory/${id}`;
@@ -44,6 +42,7 @@ describe('DeleteInventoryItemComponent', () => {
     req.flush(null);
 
     expect(component.error).toBeFalse();
+
     expect(component.message).toBe(`Inventory item "${id}" deleted successfully!`);
   });
 
@@ -58,6 +57,7 @@ describe('DeleteInventoryItemComponent', () => {
     req.error(new ErrorEvent('Network error'));
 
     expect(component.error).toBeTrue();
+
     expect(component.message).toBe(`Failed to delete inventory item "${id}".`);
   });
 

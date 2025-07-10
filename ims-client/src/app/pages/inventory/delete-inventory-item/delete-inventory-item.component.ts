@@ -1,3 +1,5 @@
+// src/app/pages/inventory/delete-inventory-item/delete-inventory-item.component.ts
+
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
@@ -20,7 +22,9 @@ import { environment } from '../../../../environments/environment';
         </app-form>
 
         <p *ngIf="message"
+
           [ngClass]="{ 'message--success': !error, 'message--error': error }">
+
           {{ message }}
         </p>
       </div>
@@ -73,6 +77,7 @@ export class DeleteInventoryItemComponent {
 
   constructor(private http: HttpClient) {}
 
+
   handleDelete(formData: any): void {
     const id = formData._id;
     const url = `${environment.apiBaseUrl}/api/reports/inventory/delete-inventory/${id}`;
@@ -85,6 +90,7 @@ export class DeleteInventoryItemComponent {
       error: () => {
         this.error = true;
         this.message = `Failed to delete inventory item "${id}."`;
+
       }
     });
   }

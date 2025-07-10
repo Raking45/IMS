@@ -48,6 +48,7 @@ export class CreateInventoryItemComponent {
     };
 
     this.http.post(url, payload).subscribe({
+
       next: () => this.message = 'Inventory item created successfully!',
       error: (err) => {
         if (err.status === 400) {
@@ -56,6 +57,7 @@ export class CreateInventoryItemComponent {
           this.message = 'Duplicate item ID. Please use a unique ID.';
         } else {
           this.message = 'Failed to create inventory item.';
+
         }
       }
     });
