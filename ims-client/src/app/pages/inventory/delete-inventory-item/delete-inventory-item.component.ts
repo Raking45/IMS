@@ -3,7 +3,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { FormComponent, FormInputConfig } from '../../../shared/form/form.component';  // Reusable form UI :contentReference[oaicite:0]{index=0}
+import { FormComponent, FormInputConfig } from '../../../shared/form/form.component';
 import { environment } from '../../../../environments/environment';
 
 @Component({
@@ -22,9 +22,7 @@ import { environment } from '../../../../environments/environment';
         </app-form>
 
         <p *ngIf="message"
-
-          [ngClass]="{ 'message--success': !error, 'message--error': error }">
-
+           [ngClass]="{ 'message--success': !error, 'message--error': error }">
           {{ message }}
         </p>
       </div>
@@ -61,7 +59,6 @@ import { environment } from '../../../../environments/environment';
   `]
 })
 export class DeleteInventoryItemComponent {
-  // Single‐field form: just the ID to delete
   formFields: FormInputConfig[] = [
     {
       name: '_id',
@@ -77,22 +74,19 @@ export class DeleteInventoryItemComponent {
 
   constructor(private http: HttpClient) {}
 
-
   handleDelete(formData: any): void {
     const id = formData._id;
-    const url = `${environment.apiBaseUrl}/api/reports/inventory/delete-inventory/${id}`;
+    const url = `${environment.apiBaseUrl}/api/reports/inventory/delete/${id}`;
 
     this.http.delete<void>(url).subscribe({
       next: () => {
         this.error = false;
-        this.message = `Inventory item "${id}" deleted successfully!`;
+        this.message = `Inventory item “${id}” deleted successfully!`;
       },
       error: () => {
         this.error = true;
-        this.message = `Failed to delete inventory item "${id}."`;
-
+        this.message = `Failed to delete inventory item “${id}.”`;
       }
     });
   }
 }
-
