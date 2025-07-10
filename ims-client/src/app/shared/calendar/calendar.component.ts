@@ -12,7 +12,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
       <input
         type="text"
         class="input"
-        [ngClass]="{ 'input--invalid': isInvalidDate }"
+        [ngClass]="{ 'input-invalid': isInvalidDate }"
         placeholder="MM/DD/YYYY"
         (focus)="showCalendar = true"
         [(ngModel)]="selectedDate"
@@ -41,81 +41,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
   `,
   styles: [
     `
-    .date-picker {
-      position: relative;
-      display: inline-block;
-    }
-
-    .calendar-popup {
-      position: absolute;
-      top: 100%;
-      left: 0;
-      z-index: 1000;
-      background-color: white;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    .calendar {
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      padding: 15px;
-      width: 100%;
-      max-width: 400px;
-      background-color: white;
-      position: relative;
-      z-index: 1000;
-      overflow: hidden;
-    }
-
-    .calendar-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background-color: #20c997;
-      color: white;
-      padding: 15px;
-      font-size: 1.25em;
-      border-radius: 8px 8px 0 0;
-      width: 100%;
-      box-sizing: border-box;
-    }
-
-    .calendar-nav-button {
-      background: none;
-      border: none;
-      cursor: pointer;
-      color: white;
-      font-size: 1.25em;
-      padding: 0 10px;
-    }
-
-    .calendar-days {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 5px;
-      padding: 15px;
-    }
-
-    .calendar-day-name,
-    .calendar-day {
-      text-align: center;
-      padding: 10px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-
-    .calendar-day:hover {
-      background-color: #eee;
-    }
-
-    .input--invalid {
-      border-color: #dc3545; /* Red color for invalid input */
-    }
+    
     `,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
