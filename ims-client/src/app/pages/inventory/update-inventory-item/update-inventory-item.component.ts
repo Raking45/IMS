@@ -1,4 +1,3 @@
-// src/app/pages/inventory/update-inventory-item/update-inventory-item.component.ts
 
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';

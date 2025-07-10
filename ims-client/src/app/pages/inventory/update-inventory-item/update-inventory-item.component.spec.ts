@@ -1,4 +1,3 @@
-// src/app/pages/inventory/update-inventory-item/update-inventory-item.component.spec.ts
 
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { UpdateInventoryItemComponent } from './update-inventory-item.component';
@@ -73,3 +72,4 @@ describe('UpdateInventoryItemComponent', () => {
     expect(routerSpy.navigate).toHaveBeenCalledWith(['/inventory']);
   }));
 });
+

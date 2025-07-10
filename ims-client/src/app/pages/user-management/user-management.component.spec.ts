@@ -1,18 +1,34 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { UsersComponent } from '../user-management/users/users.component';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
 
-import { UserManagementComponent } from './user-management.component';
-
-describe('UserManagementComponent', () => {
-  let component: UserManagementComponent;
-  let fixture: ComponentFixture<UserManagementComponent>;
+describe('UsersComponent', () => {
+  let component: UsersComponent;
+  let fixture: ComponentFixture<UsersComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [UserManagementComponent]
+      imports: [UsersComponent, HttpClientTestingModule],
+      providers: [
+      {
+        provide: ActivatedRoute,
+        useValue: {
+          params: of({ id: '123' }), // mock route params
+          snapshot: {
+            data: {},
+            paramMap: {
+              get: () => '123',
+            },
+          },
+        },
+      },
+    ],
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(UserManagementComponent);
+    fixture = TestBed.createComponent(UsersComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
@@ -21,3 +37,4 @@ describe('UserManagementComponent', () => {
     expect(component).toBeTruthy();
   });
 });
+

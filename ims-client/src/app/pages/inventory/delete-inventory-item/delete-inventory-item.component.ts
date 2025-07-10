@@ -22,7 +22,9 @@ import { environment } from '../../../../environments/environment';
         </app-form>
 
         <p *ngIf="message"
-           [ngClass]="{ 'message--success': !error, 'message--error': error }">
+
+          [ngClass]="{ 'message--success': !error, 'message--error': error }">
+
           {{ message }}
         </p>
       </div>
@@ -75,19 +77,22 @@ export class DeleteInventoryItemComponent {
 
   constructor(private http: HttpClient) {}
 
+
   handleDelete(formData: any): void {
     const id = formData._id;
-    const url = `${environment.apiBaseUrl}/api/reports/inventory/delete/${id}`;
+    const url = `${environment.apiBaseUrl}/api/reports/inventory/delete-inventory/${id}`;
 
     this.http.delete<void>(url).subscribe({
       next: () => {
         this.error = false;
-        this.message = `Inventory item “${id}” deleted successfully!`;
+        this.message = `Inventory item "${id}" deleted successfully!`;
       },
       error: () => {
         this.error = true;
-        this.message = `Failed to delete inventory item “${id}.”`;
+        this.message = `Failed to delete inventory item "${id}."`;
+
       }
     });
   }
 }
+

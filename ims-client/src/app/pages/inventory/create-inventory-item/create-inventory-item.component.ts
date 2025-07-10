@@ -1,5 +1,3 @@
-// src/app/pages/inventory/create-inventory-item/create-inventory-item.component.ts
-
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http'; // <- keep this for the service
@@ -40,7 +38,7 @@ export class CreateInventoryItemComponent {
   constructor(private http: HttpClient) {}
 
   handleSubmit(formData: any): void {
-    const url = `${environment.apiBaseUrl}/api/reports/inventory/create`;
+    const url = `${environment.apiBaseUrl}/api/reports/inventory/create-inventory/`;
     console.log('POSTing to:', url, formData);
 
     const payload = {
@@ -50,14 +48,16 @@ export class CreateInventoryItemComponent {
     };
 
     this.http.post(url, payload).subscribe({
-      next: () => this.message = '✅ Inventory item created successfully!',
+
+      next: () => this.message = 'Inventory item created successfully!',
       error: (err) => {
         if (err.status === 400) {
-          this.message = '⚠️ Validation error. Please check your input.';
+          this.message = 'Validation error. Please check your input.';
         } else if (err.status === 409) {
-          this.message = '⚠️ Duplicate item ID. Please use a unique ID.';
+          this.message = 'Duplicate item ID. Please use a unique ID.';
         } else {
-          this.message = '❌ Failed to create inventory item.';
+          this.message = 'Failed to create inventory item.';
+
         }
       }
     });

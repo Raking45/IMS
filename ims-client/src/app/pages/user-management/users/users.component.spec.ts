@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { UsersComponent } from './users.component';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
 
 describe('UsersComponent', () => {
   let component: UsersComponent;
@@ -8,7 +10,21 @@ describe('UsersComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [UsersComponent]
+      imports: [UsersComponent, HttpClientTestingModule],
+      providers: [
+      {
+        provide: ActivatedRoute,
+        useValue: {
+          params: of({ id: '123' }), // mock route params
+          snapshot: {
+            data: {},
+            paramMap: {
+              get: () => '123',
+            },
+          },
+        },
+      },
+    ],
     })
     .compileComponents();
 
@@ -21,3 +37,4 @@ describe('UsersComponent', () => {
     expect(component).toBeTruthy();
   });
 });
+

@@ -1,4 +1,3 @@
-// src/app/pages/inventory/delete-inventory-item/delete-inventory-item.component.spec.ts
 
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { DeleteInventoryItemComponent } from './delete-inventory-item.component';
@@ -10,8 +9,9 @@ describe('DeleteInventoryItemComponent', () => {
   let fixture: ComponentFixture<DeleteInventoryItemComponent>;
   let httpMock: HttpTestingController;
 
-  const id = 'item123';
-  const endpoint = `${environment.apiBaseUrl}/api/reports/inventory/delete/${id}`;
+
+  const id = 'item001';
+  const endpoint = `${environment.apiBaseUrl}/api/reports/inventory/delete-inventory/${id}`;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -42,8 +42,10 @@ describe('DeleteInventoryItemComponent', () => {
     req.flush(null);
 
     expect(component.error).toBeFalse();
-    expect(component.message).toBe(`Inventory item “${id}” deleted successfully!`);
+
+    expect(component.message).toBe(`Inventory item "${id}" deleted successfully!`);
   });
+
 
   it('should show error message on HTTP failure', () => {
     component.handleDelete({ _id: id });
@@ -55,6 +57,67 @@ describe('DeleteInventoryItemComponent', () => {
     req.error(new ErrorEvent('Network error'));
 
     expect(component.error).toBeTrue();
-    expect(component.message).toBe(`Failed to delete inventory item “${id}.”`);
+
+    expect(component.message).toBe(`Failed to delete inventory item "${id}".`);
   });
+
+
+/*it('should send DELETE request and set success message', fakeAsync(() => {
+    component.handleDelete({ _id: id });
+
+    const req = httpMock.expectOne(endpoint);
+    expect(req.request.method).toBe('DELETE');
+
+    req.flush(null); // Simulate response
+    tick(); // Simulate passage of async time
+
+    expect(component.error).toBeFalse();
+    expect(component.message).toBe(`Inventory item "${id}" deleted successfully!`);
+  }));
+
+
+  it('should set error message on failed delete', fakeAsync(() => {
+    component.handleDelete({ _id: id });
+
+    const req = httpMock.expectOne(endpoint);
+    expect(req.request.method).toBe('DELETE');
+
+    req.flush('Delete failed', { status: 500, statusText: 'Internal Server Error' });
+    tick();
+
+    expect(component.error).toBeTrue();
+    expect(component.message).toBe(`Failed to delete inventory item "${id}."`);
+  }));
+
+  it('should send DELETE request and set success message', fakeAsync(() => {
+    component.handleDelete({ _id: id });
+
+    const req = httpMock.expectOne(endpoint);
+    expect(req.request.method).toBe('DELETE');
+
+    // Simulate success
+    req.flush(null);
+
+    // Simulate async passage
+    tick();
+
+    expect(component.error).toBeFalse();
+    expect(component.message).toBe(`Inventory item "${id}" deleted successfully!`);
+  }));
+
+  it('should set error message on failed delete', fakeAsync(() => {
+    component.handleDelete({ _id: id });
+
+    const req = httpMock.expectOne(endpoint);
+    expect(req.request.method).toBe('DELETE');
+
+    // Simulate error
+    req.flush('Error', { status: 500, statusText: 'Server Error' });
+
+    tick();
+
+    expect(component.error).toBeTrue();
+    expect(component.message).toBe(`Failed to delete inventory item "${id}."`);
+  }));*/
+
 });

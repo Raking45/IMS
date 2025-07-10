@@ -21,6 +21,7 @@ import { UserDetailsComponent } from './pages/user-management/user-details/user-
 import { authGuard } from './pages/security/auth.guard';
 import { SigninComponent } from './pages/security/signin/signin.component';
 import { UnauthorizedComponent } from './pages/security/unauthorized/unauthorized.component';
+import { DemoComponent } from './pages/demo/demo.component';
 
 // Export the Routes
 export const routes: Routes = [
@@ -30,6 +31,9 @@ export const routes: Routes = [
     canActivate: [authGuard],
     children: [
       { path: '', component: DashboardComponent, data: { roles: ['admin', 'manager', 'staff', 'viewer'] } },
+
+      // Demo
+      { path: 'demo', component: DemoComponent, data: { roles: ['admin', 'manager', 'staff', 'viewer'] } },
 
       // User Management (Admins only)
       { path: 'user-management', component: UserManagementComponent, data: { roles: ['admin'] } },
