@@ -90,7 +90,7 @@ describe('CreateInventoryItemComponent', () => {
 
 
     expect(component.message).toBe(`Duplicate item ID. Please use a unique ID.`);
-
+  });
 
   it('should show error message on HTTP failure (400)', () => {
     const mockForm = {
@@ -108,9 +108,7 @@ describe('CreateInventoryItemComponent', () => {
     const req = httpMock.expectOne(endpoint);
     req.flush({}, { status: 400, statusText: 'Bad Request' });
 
-
     expect(component.message).toBe('Validation error. Please check your input.');
-
   });
 
   it('should show fallback error message for unknown error', () => {
