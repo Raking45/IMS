@@ -1,34 +1,32 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { ViewInventoryItemByIdComponent } from './view-inventory-item-by-id.component';
-import { environment } from '../../../../environments/environment';
+import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
+import { convertToParamMap } from '@angular/router';
 
 describe('ViewInventoryItemByIdComponent', () => {
   let component: ViewInventoryItemByIdComponent;
   let fixture: ComponentFixture<ViewInventoryItemByIdComponent>;
   let httpMock: HttpTestingController;
 
-  const mockInventoryList = [
-    { _id: 'inv10', name: 'Monitor' },
-    { _id: 'inv2', name: 'Mouse' },
-    { _id: 'item001', name: 'Hidden Item' }, // should be filtered out
-  ];
-
-  const mockItemById = {
-    _id: 'inv2',
-    name: 'Mouse',
-    description: 'Wireless Mouse',
-    quantity: 50,
-    price: 29.99,
-    categoryId: 'CAT001',
-    supplierId: 'SUP001',
-    dateCreated: '2025-02-01T00:00:00.000Z',
-    dateModified: '2025-02-05T00:00:00.000Z',
+  const mockActivatedRoute = {
+    snapshot: {
+      paramMap: {
+        get: (key: string) => 'inv2', // mock ID
+      },
+    },
   };
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, ViewInventoryItemByIdComponent],
+      imports: [
+        HttpClientTestingModule,
+        ViewInventoryItemByIdComponent, // ✅ Imported, not declared
+      ],
+      providers: [
+        { provide: ActivatedRoute, useValue: { queryParamMap: of(convertToParamMap({}))} },
+      ],
     }).compileComponents();
   }));
 
@@ -36,10 +34,11 @@ describe('ViewInventoryItemByIdComponent', () => {
     fixture = TestBed.createComponent(ViewInventoryItemByIdComponent);
     component = fixture.componentInstance;
     httpMock = TestBed.inject(HttpTestingController);
+    fixture.detectChanges();
   });
 
   afterEach(() => {
-    httpMock.verify();
+    if (httpMock) httpMock.verify();
   });
 
   it('should create the component', () => {

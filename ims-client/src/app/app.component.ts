@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
+import { SearchService } from './shared/services/search-service.service';
 
 @Component({
   selector: 'app-root',
@@ -12,5 +13,5 @@ import { RouterLink, RouterOutlet } from '@angular/router';
   `
 })
 export class AppComponent {
-  
+  constructor(public searchService: SearchService) {}
 }

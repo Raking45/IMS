@@ -37,6 +37,10 @@ export class CreateInventoryItemComponent {
 
   constructor(private http: HttpClient) {}
 
+  trackByName(index: number, input: FormInputConfig): string {
+    return input.name || index.toString();
+  }
+
   handleSubmit(formData: any): void {
     const url = `${environment.apiBaseUrl}/api/reports/inventory/create-inventory/`;
     console.log('POSTing to:', url, formData);

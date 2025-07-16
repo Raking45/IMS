@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ViewSuppliersComponent } from './view-suppliers.component';
+import { ActivatedRoute } from '@angular/router';
 
 describe('ViewSuppliersComponent', () => {
   let component: ViewSuppliersComponent;

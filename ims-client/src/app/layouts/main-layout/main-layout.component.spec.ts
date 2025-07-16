@@ -3,6 +3,7 @@ import { MainLayoutComponent } from './main-layout.component';
 import { provideRouter } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('MainLayoutComponent', () => {
   let component: MainLayoutComponent;
@@ -10,7 +11,7 @@ describe('MainLayoutComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MainLayoutComponent],
+      imports: [MainLayoutComponent, HttpClientTestingModule],
       providers: [
         {
           provide: ActivatedRoute,

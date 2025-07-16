@@ -9,43 +9,43 @@ import { of, BehaviorSubject } from 'rxjs';
 import { filter, switchMap, take } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-view-inventory-item-by-id',
+  selector: 'app-view-supplier-by-id',
   standalone: true,
   imports: [CommonModule, FormComponent, TableComponent, HttpClientModule],
   template: `
-    <div class="view-inventory-id-container">
-      <h2 class="view-inv-header">View Inventory Item by Id</h2>
+    <div class="view-supplier-id-container">
+      <h2 class="view-supplier-header">View Supplier by Id</h2>
       <app-form
         *ngIf="formFields.length"
-        [title]="'Search Inventory Item'"
+        [title]="'Search Supplier'"
         [submitLabel]="'Search'"
         [inputs]="formFields"
         (formSubmit)="onFormSubmit($event)">
       </app-form>
 
       <app-table
-        *ngIf="inventoryItems.length > 0"
-        [title]="'Inventory Items'"
-        [data]="inventoryItems"
-        [headers]="inventoryHeaders"
-        [sortableColumns]="['Name', 'Quantity', 'Price']"
-        [columnTypes]="{Name:'alpha', Quantity: 'numeric', Price: 'numeric'}"
+        *ngIf="supplierResult.length > 0"
+        [title]="'Supplier Details'"
+        [data]="supplierResult"
+        [headers]="supplierHeaders"
+        [sortableColumns]="['Supplier Name', 'Contact Info']"
+        [columnTypes]="{ 'Supplier Name': 'alpha', 'Contact Info': 'alpha' }"
         [headerBackground]="'default'">
       </app-table>
     </div>
   `,
   styles: [`
-    .view-inv-header {
+    .view-supplier-header {
       text-align: center;
     }
   `]
 })
-export class ViewInventoryItemByIdComponent implements OnInit {
-  inventoryItems: any[] = [];
+export class ViewSupplierByIdComponent implements OnInit {
+  supplierResult: any[] = [];
   formFields: FormInputConfig[] = [];
-  allInventory: any[] = [];
-  inventoryHeaders = [
-    'Id', 'Name', 'Description', 'Quantity', 'Price', 'Category Id', 'Supplier Id', 'Date Created', 'Date Modified'
+  allSuppliers: any[] = [];
+  supplierHeaders = [
+    'ID', 'Supplier ID', 'Supplier Name', 'Contact Info', 'Address', 'Date Created', 'Date Modified'
   ];
 
   private formReady$ = new BehaviorSubject<boolean>(false);
@@ -58,7 +58,6 @@ export class ViewInventoryItemByIdComponent implements OnInit {
   ngOnInit(): void {
     this.loadDropdownOptions();
 
-    // Listen for 'id' query param and auto-submit
     this.route.queryParamMap
       .pipe(
         switchMap(params => {
@@ -80,30 +79,22 @@ export class ViewInventoryItemByIdComponent implements OnInit {
   }
 
   loadDropdownOptions() {
-    this.http.get<any[]>(`${environment.apiBaseUrl}/api/reports/inventory/view`).subscribe(data => {
-      this.allInventory = data;
+    this.http.get<any[]>(`${environment.apiBaseUrl}/api/reports/suppliers/view`).subscribe(data => {
+      this.allSuppliers = data;
 
-      const options = data
-        .filter(item => !/^item\d+$/i.test(item._id))
-        .slice()
-        .sort((a, b) => {
-          const numA = parseInt(a._id.replace(/[^\d]/g, ''), 10);
-          const numB = parseInt(b._id.replace(/[^\d]/g, ''), 10);
-          return numA - numB;
-        })
-        .map(item => ({
-          label: `${item._id} - ${item.name}`,
-          value: item._id
-        }));
+      const options = data.map(supplier => ({
+        label: `${supplier._id} - ${supplier.supplierName}`,
+        value: supplier._id
+      }));
 
       this.formFields = [
         {
-          label: 'Select Inventory Item',
+          label: 'Select Supplier',
           name: 'selectId',
           type: 'select',
           required: true,
           options,
-          errorMessage: 'Please select an item.'
+          errorMessage: 'Please select a supplier.'
         }
       ];
 
@@ -115,19 +106,17 @@ export class ViewInventoryItemByIdComponent implements OnInit {
     const id = formValue.selectId;
     if (!id) return;
 
-    this.http.get<any>(`${environment.apiBaseUrl}/api/reports/inventory/view/${id}`).subscribe(item => {
+    this.http.get<any>(`${environment.apiBaseUrl}/api/reports/suppliers/view/${id}`).subscribe(supplier => {
       const transformed = {
-        'Id': item._id,
-        'Name': item.name,
-        'Description': item.description,
-        'Quantity': item.quantity,
-        'Price': item.price,
-        'Category Id': item.categoryId,
-        'Supplier Id': item.supplierId,
-        'Date Created': item.dateCreated,
-        'Date Modified': item.dateModified
+        'ID': supplier._id,
+        'Supplier ID': supplier.supplierId,
+        'Supplier Name': supplier.supplierName,
+        'Contact Info': supplier.contactInformation,
+        'Address': supplier.address,
+        'Date Created': supplier.dateCreated,
+        'Date Modified': supplier.dateModified
       };
-      this.inventoryItems = [transformed];
+      this.supplierResult = [transformed];
     });
   }
 }

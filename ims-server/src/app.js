@@ -44,6 +44,9 @@ const createCategoryRouter = require('./routes/categories/create-category');
 const deleteCategoryRouter = require('./routes/categories/delete-category');
 const updateCategoryRouter = require('./routes/categories/update-category');
 
+// Importing search router
+const searchRouter = require('./routes/search')
+
 // Connect to MongoDB using Mongoose
 connectToDatabase();  // Initializes DB Connection
 
@@ -79,16 +82,19 @@ app.use('/api/reports/inventory/delete', deleteInventoryRouter);
 app.use('/api/reports/inventory/update', updateInventoryRouter);
 
 // Supplier Routes
-app.use('/api/reports/supplier/view', viewSupplierRouter);
-app.use('/api/reports/supplier/create', createSupplierRouter);
-app.use('/api/reports/supplier/delete', deleteSupplierRouter);
-app.use('/api/reports/supplier/update', updateSupplierRouter);
+app.use('/api/reports/suppliers/view', viewSupplierRouter);
+app.use('/api/reports/suppliers/create', createSupplierRouter);
+app.use('/api/reports/suppliers/delete', deleteSupplierRouter);
+app.use('/api/reports/suppliers/update', updateSupplierRouter);
 
 // Category Routes
-app.use('/api/reports/category/view', viewCategoryRouter);
-app.use('/api/reports/category/create', createCategoryRouter);
-app.use('/api/reports/category/delete', deleteCategoryRouter);
-app.use('/api/reports/category/update', updateCategoryRouter);
+app.use('/api/reports/categories/view', viewCategoryRouter);
+app.use('/api/reports/categories/create', createCategoryRouter);
+app.use('/api/reports/categories/delete', deleteCategoryRouter);
+app.use('/api/reports/categories/update', updateCategoryRouter);
+
+// Search Routes
+app.use('/api/search', searchRouter);
 
 // Use the error handling middleware
 app.use(notFoundHandler);

@@ -19,7 +19,7 @@ import { TableComponent } from '../../../shared/table/table.component';
         [columnTypes]="{ categoryName: 'alpha' }"
         [headerBackground]="'default'">
       </app-table>
-    </div>  
+    </div>
   `,
   styles: [`
     .cat-view-category {
@@ -39,7 +39,7 @@ export class ViewCategoriesComponent implements OnInit {
   }
 
   loadCategories() {
-    this.http.get<any[]>(`${environment.apiBaseUrl}/api/reports/category/view`).subscribe(data => {
+    this.http.get<any[]>(`${environment.apiBaseUrl}/api/reports/categories/view`).subscribe(data => {
       this.categories = data;
     });
   }

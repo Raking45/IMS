@@ -67,7 +67,7 @@ describe('ViewInventoryItemsComponent', () => {
   it('should initialize with empty inventoryItems and correct headers', () => {
   expect(component.inventoryItems).toEqual([]);
   expect(component.inventoryHeaders).toEqual([
-    'Id', 'Name', 'Description', 'Quantity', 'Price', 'Category Id', 'Supplier Id', 'Date Created', 'Date Modified'
+    'Image', 'Id', 'Name', 'Description', 'Quantity', 'Price', 'Category Id', 'Supplier Id', 'Date Created', 'Date Modified'
   ]);
 });
 

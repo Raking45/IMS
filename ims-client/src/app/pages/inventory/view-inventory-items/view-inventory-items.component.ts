@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { environment } from '../../../../environments/environment';
 import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { TableComponent } from '../../../shared/table/table.component';
+import { SearchService } from '../../../shared/services/search-service.service';
 
 @Component({
   selector: 'app-view-inventory-items',
@@ -14,6 +15,7 @@ import { TableComponent } from '../../../shared/table/table.component';
     <app-table
       *ngIf="inventoryItems.length > 0"
       [title]="'Inventory Items'"
+      [imageColumn]="'Image'"
       [data]="inventoryItems"
       [headers]="inventoryHeaders"
       [sortableColumns]="['Name', 'Quantity', 'Price']"
@@ -30,31 +32,32 @@ import { TableComponent } from '../../../shared/table/table.component';
 })
 export class ViewInventoryItemsComponent implements OnInit {
   inventoryItems: any[] = [];
-  inventoryHeaders = ['Id', 'Name', 'Description', 'Quantity', 'Price', 'Category Id', 'Supplier Id', 'Date Created', 'Date Modified'];
+  inventoryHeaders = ['Image', 'Id', 'Name', 'Description', 'Quantity', 'Price', 'Category Id', 'Supplier Id', 'Date Created', 'Date Modified'];
   formFields: any[] = [];
 
   allInventory: any[] = [];
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private searchService: SearchService) {}
 
   ngOnInit(): void {
     this.loadInventory();
   }
 
   loadInventory() {
-    this.http.get<any[]>(`${environment.apiBaseUrl}/api/reports/inventory/view`).subscribe(data => {
-      this.inventoryItems = data;
-      for (let data of this.inventoryItems) {
-        data['Id']=data['_id'];
-        data['Name']=data['name'];
-        data['Description']=data['description'];
-        data['Quantity']=data['quantity'];
-        data['Price']=data['price'];
-        data['Category Id']=data['categoryId'];
-        data['Supplier Id']=data['supplierId'];
-        data['Date Created']=data['dateCreated'];
-        data['Date Modified']=data['dateModified'];
-      }
+  this.http.get<any[]>(`${environment.apiBaseUrl}/api/reports/inventory/view`).subscribe(data => {
+    this.inventoryItems = data.map((item, index) => ({
+      Id: item._id || index,
+      ...item,
+      Name: item.name,
+      Description: item.description,
+      Quantity: item.quantity,
+      Price: item.price,
+      'Category Id': item.categoryId,
+      'Supplier Id': item.supplierId,
+      'Date Created': item.dateCreated,
+      'Date Modified': item.dateModified,
+      Image: `https://picsum.photos/seed/${item._id || index}/${35}` // assign a unique image URL
+      }));
     });
   }
 }

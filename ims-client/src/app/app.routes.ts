@@ -22,6 +22,9 @@ import { authGuard } from './pages/security/auth.guard';
 import { SigninComponent } from './pages/security/signin/signin.component';
 import { UnauthorizedComponent } from './pages/security/unauthorized/unauthorized.component';
 import { DemoComponent } from './pages/demo/demo.component';
+import { SearchBarComponent } from './shared/search-bar/search-bar.component';
+import { ViewCategoryByIdComponent } from './pages/categories/view-category-by-id/view-category-by-id.component';
+import { ViewSupplierByIdComponent } from './pages/supplier/view-supplier-by-id/view-supplier-by-id.component';
 
 // Export the Routes
 export const routes: Routes = [
@@ -46,6 +49,7 @@ export const routes: Routes = [
       { path: 'reports/categories/delete-category', component: DeleteCategoryComponent, data: { roles: ['admin', 'manager'] } },
       { path: 'reports/categories/update-category', component: UpdateCategoryComponent, data: { roles: ['admin', 'manager'] } },
       { path: 'reports/categories/view', component: ViewCategoriesComponent, data: { roles: ['admin', 'manager', 'staff', 'viewer'] } },
+      { path: 'reports/categories/view-category-by-id', component: ViewCategoryByIdComponent, data: { roles: ['admin', 'manager', 'staff', 'viewer'] } },
 
       // Inventory
       { path: 'reports/inventory/create-inventory', component: CreateInventoryItemComponent, data: { roles: ['admin', 'manager'] } },
@@ -59,8 +63,12 @@ export const routes: Routes = [
       { path: 'reports/suppliers/delete-supplier', component: DeleteSupplierComponent, data: { roles: ['admin', 'manager'] } },
       { path: 'reports/suppliers/update-supplier', component: UpdateSupplierComponent, data: { roles: ['admin', 'manager'] } },
       { path: 'reports/suppliers/view', component: ViewSuppliersComponent, data: { roles: ['admin', 'manager', 'staff', 'viewer'] } },
+      { path: 'reports/suppliers/view-supplier-by-id', component: ViewSupplierByIdComponent, data: { roles: ['admin', 'manager', 'staff', 'viewer'] } },
+
+      // Search
+      { path: 'reports/search', component: SearchBarComponent },
     ]
   },
   { path: 'signin', component: SigninComponent },
-  { path: 'unauthorized', component: UnauthorizedComponent } 
+  { path: 'unauthorized', component: UnauthorizedComponent }
 ];
