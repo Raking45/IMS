@@ -40,7 +40,7 @@ export class ViewSuppliersComponent {
   }
 
   loadSuppliers() {
-      this.http.get<any[]>(`${environment.apiBaseUrl}/api/reports/supplier/view`).subscribe(data => {
+      this.http.get<any[]>(`${environment.apiBaseUrl}/api/reports/suppliers/view`).subscribe(data => {
         this.suppliers = data;
       });
     }

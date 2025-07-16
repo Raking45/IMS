@@ -2,11 +2,13 @@ import { Component, inject } from '@angular/core';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { CookieService } from 'ngx-cookie-service';
 import { NgClass } from '@angular/common';
+import { SearchBarComponent } from '../../shared/search-bar/search-bar.component';
+
 
 @Component({
   selector: 'app-main-layout',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, NgClass],
+  imports: [RouterOutlet, RouterLink, NgClass, SearchBarComponent],
   template: `
   <div class="app">
     <!-- Sidebar Navigation -->
@@ -18,7 +20,7 @@ import { NgClass } from '@angular/common';
       <!-- Static Navigation Links -->
       <a class="app-side-menu-link dashboard" routerLink="/" (click)="closeAllSections()">
       <i class="fas fa-tachometer-alt"></i>Dashboard</a>
-      
+
       <!-- Collapsible Section: Category Reports -->
       <div class="app-side-menu-section" (click)="toggleSection($event, 'categoryReports')">
         <div class="app-side-menu-link categories"><i class="fas fa-tags"></i>Categories</div>
@@ -102,6 +104,11 @@ import { NgClass } from '@angular/common';
     <div class="app-main-content">
       <header class="app-header">
         <div class="app-header-content">
+
+          <div class="app-header-search">
+            <app-search-bar (search)="handleSearch($event)"></app-search-bar>
+          </div>
+
           <div class="app-header-title">Inventory Management System</div>
 
           <!-- User Profile Dropdown -->
@@ -248,21 +255,20 @@ import { NgClass } from '@angular/common';
     }
 
     .app-header-content {
-      position: relative;
-      width: 100%;
+      width: 75%;
       display: flex;
-      justify-content: center;
       align-items: center;
+      padding: 0 2rem;
     }
 
     .app-header-title {
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
       font-size: 1.6em;
       font-weight: 600;
       color: var(--text-white);
       font-family: 'Rubik', sans-serif;
+      margin: 0;
+      text-align: center;
+      flex: 1;
     }
 
     .app-user-profile {
@@ -271,6 +277,12 @@ import { NgClass } from '@angular/common';
       cursor: pointer;
       display: flex;
       align-items: center;
+    }
+
+    .app-header-search {
+      flex-grow: 1;
+      max-width: 400px;
+      margin: 0 auto;
     }
 
     .app-user-avatar {
@@ -394,6 +406,7 @@ export class MainLayoutComponent {
   // Category Report Links
   categoryReports = [
     { name: 'View Categories', url: '/reports/categories/view' },
+    { name: 'View Category by Id', url: '/reports/categories/view-category-by-id' },
     { name: 'Create Category', url: '/reports/categories/create-category' },
     { name: 'Update Category', url: '/reports/categories/update-category' },
     { name: 'Delete Category', url: '/reports/categories/delete-category' },
@@ -411,10 +424,16 @@ export class MainLayoutComponent {
   // Supplier Report Links
   supplierReports = [
     { name: 'View Suppliers', url: '/reports/suppliers/view' },
+    { name: 'View Supplier by Id', url: '/reports/suppliers/view-supplier-by-id' },
     { name: 'Create Supplier', url: '/reports/suppliers/create-supplier' },
     { name: 'Update Supplier', url: '/reports/suppliers/update-supplier' },
     { name: 'Delete Supplier', url: '/reports/suppliers/delete-supplier' },
   ];
+
+  // Search Links
+  search = [
+    { name: 'Search', url: '/reports/search' },
+  ]
 
   constructor(private cookieService: CookieService, private router: Router) {
     // Load Session User from Cookie
@@ -446,6 +465,13 @@ export class MainLayoutComponent {
       this.sections[section] = true;
     }
   }
+
+  handleSearch(term: string) {
+    const trimmed = term.trim();
+    if (!trimmed) return;
+    this.router.navigate(['/reports/search'], { queryParams: { q: trimmed } });
+  }
+
 
   // Log Out User
   signout() {

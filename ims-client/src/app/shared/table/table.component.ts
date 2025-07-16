@@ -37,12 +37,23 @@ import { CommonModule } from '@angular/common';
           </tr>
         </thead>
         <tbody class="table-body">
-          @for(row of paginatedData; track row) {
+          @for(row of paginatedData; track row._id) {
             <tr class="table-row">
               @for(header of headers; track header) {
                 <td class="table-cell">
                   <ng-container *ngIf="header !== actionsColumn; else customCell">
-                    {{ row[header] }}
+                    <ng-container *ngIf="header === imageColumn && row[header]; else regularCell">
+                      <img
+                        [src]="row[header]"
+                        [width]="imageSize"
+                        [height]="imageSize"
+                        alt="Image"
+                        class="thumbnail"
+                      />
+                    </ng-container>
+                    <ng-template #regularCell>
+                      {{ row[header] }}
+                    </ng-template>
                   </ng-container>
                   <ng-template #customCell>
                     <ng-container
@@ -81,7 +92,7 @@ import { CommonModule } from '@angular/common';
   `,
   styles: [``]
 })
-export class TableComponent implements OnInit, OnChanges {
+export class TableComponent implements OnInit {
   @Input() title!: string;
   @Input() data!: any[];
   @Input() headers!: string[];
@@ -91,6 +102,10 @@ export class TableComponent implements OnInit, OnChanges {
   @Input() headerBackground: 'default' | 'primary' | 'secondary' = 'default';
   @Input() actionsColumn: string = 'Actions';
 
+  /** New Inputs */
+  @Input() imageColumn: string = 'image';
+  @Input() imageSize: number = 35;
+
   @ContentChild('rowActions', { static: false }) rowActionsTemplate!: TemplateRef<any>;
 
   currentPage: number = 1;
@@ -98,12 +113,6 @@ export class TableComponent implements OnInit, OnChanges {
   sortDirection: 'asc' | 'desc' = 'asc';
 
   ngOnInit(): void {}
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['data']) {
-      this.sortData(this.sortedColumn);
-    }
-  }
 
   get paginatedData() {
     const start = (this.currentPage - 1) * this.recordsPerPage;

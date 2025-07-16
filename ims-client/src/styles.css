@@ -10,9 +10,9 @@
   --primary-dark: #1A1A1A; /* Almost black, for deep contrast */
   --primary-black: #000000;
 
-  --accent-color: #A3B18A; 
-  --accent-light: #9AB5C5; 
-  --accent-dark: #336A8B; 
+  --accent-color: #A3B18A;
+  --accent-light: #9AB5C5;
+  --accent-dark: #336A8B;
 
   --success-color: #4CAF50; /* Positive green */
   --error-color: #D64545; /* Professional but visible red */
@@ -234,7 +234,7 @@ body {
     user-select: none;
     cursor: pointer;
     user-select: none;
-  } 
+  }
 
   .table-header:hover {
     background-color: var(--hover-color);
@@ -256,6 +256,7 @@ body {
     color: var(--text-secondary);
     font-size: 0.95rem;
   }
+
 
   /* Pagination */
   .pagination-wrapper {

@@ -9,43 +9,42 @@ import { of, BehaviorSubject } from 'rxjs';
 import { filter, switchMap, take } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-view-inventory-item-by-id',
+  selector: 'app-view-category-by-id',
   standalone: true,
   imports: [CommonModule, FormComponent, TableComponent, HttpClientModule],
   template: `
-    <div class="view-inventory-id-container">
-      <h2 class="view-inv-header">View Inventory Item by Id</h2>
+    <div class="view-category-id-container">
+      <h2 class="view-cat-header">View Category by Id</h2>
       <app-form
         *ngIf="formFields.length"
-        [title]="'Search Inventory Item'"
+        [title]="'Search Category'"
         [submitLabel]="'Search'"
         [inputs]="formFields"
         (formSubmit)="onFormSubmit($event)">
       </app-form>
 
       <app-table
-        *ngIf="inventoryItems.length > 0"
-        [title]="'Inventory Items'"
-        [data]="inventoryItems"
-        [headers]="inventoryHeaders"
-        [sortableColumns]="['Name', 'Quantity', 'Price']"
-        [columnTypes]="{Name:'alpha', Quantity: 'numeric', Price: 'numeric'}"
+        *ngIf="categoryResult.length > 0"
+        [title]="'Category Details'"
+        [data]="categoryResult"
+        [headers]="categoryHeaders"
         [headerBackground]="'default'">
       </app-table>
     </div>
   `,
   styles: [`
-    .view-inv-header {
+    .view-cat-header {
       text-align: center;
     }
   `]
 })
-export class ViewInventoryItemByIdComponent implements OnInit {
-  inventoryItems: any[] = [];
+export class ViewCategoryByIdComponent implements OnInit {
+  categoryResult: any[] = [];
   formFields: FormInputConfig[] = [];
-  allInventory: any[] = [];
-  inventoryHeaders = [
-    'Id', 'Name', 'Description', 'Quantity', 'Price', 'Category Id', 'Supplier Id', 'Date Created', 'Date Modified'
+  allCategories: any[] = [];
+
+  categoryHeaders = [
+    'Id', 'Category Id', 'Category Name', 'Description', 'Date Created', 'Date Modified'
   ];
 
   private formReady$ = new BehaviorSubject<boolean>(false);
@@ -58,7 +57,6 @@ export class ViewInventoryItemByIdComponent implements OnInit {
   ngOnInit(): void {
     this.loadDropdownOptions();
 
-    // Listen for 'id' query param and auto-submit
     this.route.queryParamMap
       .pipe(
         switchMap(params => {
@@ -80,30 +78,29 @@ export class ViewInventoryItemByIdComponent implements OnInit {
   }
 
   loadDropdownOptions() {
-    this.http.get<any[]>(`${environment.apiBaseUrl}/api/reports/inventory/view`).subscribe(data => {
-      this.allInventory = data;
+    this.http.get<any[]>(`${environment.apiBaseUrl}/api/reports/categories/view`).subscribe(data => {
+      this.allCategories = data;
 
       const options = data
-        .filter(item => !/^item\d+$/i.test(item._id))
         .slice()
         .sort((a, b) => {
           const numA = parseInt(a._id.replace(/[^\d]/g, ''), 10);
           const numB = parseInt(b._id.replace(/[^\d]/g, ''), 10);
           return numA - numB;
         })
-        .map(item => ({
-          label: `${item._id} - ${item.name}`,
-          value: item._id
+        .map(cat => ({
+          label: `${cat._id} - ${cat.categoryName}`,
+          value: cat._id
         }));
 
       this.formFields = [
         {
-          label: 'Select Inventory Item',
+          label: 'Select Category',
           name: 'selectId',
           type: 'select',
           required: true,
           options,
-          errorMessage: 'Please select an item.'
+          errorMessage: 'Please select a category.'
         }
       ];
 
@@ -115,19 +112,17 @@ export class ViewInventoryItemByIdComponent implements OnInit {
     const id = formValue.selectId;
     if (!id) return;
 
-    this.http.get<any>(`${environment.apiBaseUrl}/api/reports/inventory/view/${id}`).subscribe(item => {
+    this.http.get<any>(`${environment.apiBaseUrl}/api/reports/categories/view/${id}`).subscribe(category => {
       const transformed = {
-        'Id': item._id,
-        'Name': item.name,
-        'Description': item.description,
-        'Quantity': item.quantity,
-        'Price': item.price,
-        'Category Id': item.categoryId,
-        'Supplier Id': item.supplierId,
-        'Date Created': item.dateCreated,
-        'Date Modified': item.dateModified
+        'Id': category._id,
+        'Category Id': category.categoryId,
+        'Category Name': category.categoryName,
+        'Description': category.description,
+        'Date Created': category.dateCreated,
+        'Date Modified': category.dateModified
       };
-      this.inventoryItems = [transformed];
+      this.categoryResult = [transformed];
     });
   }
 }
+
