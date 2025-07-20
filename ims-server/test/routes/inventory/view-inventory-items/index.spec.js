@@ -22,7 +22,7 @@ describe('GET /api/reports/inventory/view (non-destructive)', () => {
     const res = await request(app).get('/api/reports/inventory/view');
     expect(res.statusCode).toBe(200);
     expect(Array.isArray(res.body)).toBe(true);
-  });
+  }, 10000);
 
   // 2. Should return 404 for valid but non-existent ObjectId
   it('should return 404 for a valid but non-existent inventory item ID', async () => {

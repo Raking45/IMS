@@ -90,28 +90,40 @@ export class SearchBarComponent {
   }
 
   selectSuggestion(suggestion: any) {
-    this.search.emit(suggestion);
-    this.searchTerm = suggestion.display;
-    this.filteredSuggestions = [];
-    this.showSuggestions = false;
+  this.search.emit(suggestion);
 
-    // Navigate based on suggestion type
-    switch (suggestion.type) {
-      case 'inventory':
-        this.router.navigate(['/reports/inventory/view-inventory-item-by-id'], { queryParams: { id: suggestion.invId } });
-        break;
-      case 'category':
-        this.router.navigate(['/reports/categories/view-category-by-id'], { queryParams: { id: suggestion.categoryId } });
-        break;
-      case 'supplier':
-        this.router.navigate(['/reports/suppliers/view-supplier-by-id'], { queryParams: { id: suggestion.supplierId } });
-        break;
-      default:
-        console.warn('Unknown search result type', suggestion);
-    }
-
-    this.searchService.updateSearchTerm(this.searchTerm); // optional
+  // Navigate based on suggestion type
+  switch (suggestion.type) {
+    case 'inventory':
+      this.router.navigate(['/reports/inventory/view-inventory-item-by-id'], {
+        queryParams: { id: suggestion.invId },
+      });
+      break;
+    case 'category':
+      this.router.navigate(['/reports/categories/view-category-by-id'], {
+        queryParams: { id: suggestion.categoryId },
+      });
+      break;
+    case 'supplier':
+      this.router.navigate(['/reports/suppliers/view-supplier-by-id'], {
+        queryParams: { id: suggestion.supplierId },
+      });
+      break;
+    default:
+      console.warn('Unknown search result type', suggestion);
   }
+
+  // Reset state
+  this.resetSearchBar();
+}
+
+private resetSearchBar() {
+  this.searchTerm = '';
+  this.filteredSuggestions = [];
+  this.showSuggestions = false;
+  this.searchService.updateSearchTerm('');
+}
+
 
   hideSuggestionsWithDelay() {
     // Delay so click event can register before hiding suggestions

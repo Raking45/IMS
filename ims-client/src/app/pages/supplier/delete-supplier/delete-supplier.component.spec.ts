@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { DeleteSupplierComponent } from './delete-supplier.component';
+import { ActivatedRoute, convertToParamMap } from '@angular/router';
+import { of } from 'rxjs';
 
 describe('DeleteSupplierComponent', () => {
   let component: DeleteSupplierComponent;
@@ -8,9 +10,21 @@ describe('DeleteSupplierComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DeleteSupplierComponent]
-    })
-    .compileComponents();
+      imports: [
+        DeleteSupplierComponent,
+        HttpClientTestingModule
+      ],
+      providers: [
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            queryParamMap: of(convertToParamMap({})),
+            paramMap: of(convertToParamMap({})),
+            snapshot: { queryParamMap: convertToParamMap({}) }
+          }
+        }
+      ],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(DeleteSupplierComponent);
     component = fixture.componentInstance;
@@ -21,3 +35,4 @@ describe('DeleteSupplierComponent', () => {
     expect(component).toBeTruthy();
   });
 });
+

@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { CreateCategoryComponent } from './create-category.component';
+import { ActivatedRoute, convertToParamMap } from '@angular/router';
+import { of } from 'rxjs';
 
 describe('CreateCategoryComponent', () => {
   let component: CreateCategoryComponent;
@@ -8,9 +10,14 @@ describe('CreateCategoryComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CreateCategoryComponent]
-    })
-    .compileComponents();
+      imports: [
+        CreateCategoryComponent,
+        HttpClientTestingModule  
+      ],
+      providers: [
+        { provide: ActivatedRoute, useValue: { queryParamMap: of(convertToParamMap({})) } }
+      ]
+    }).compileComponents();
 
     fixture = TestBed.createComponent(CreateCategoryComponent);
     component = fixture.componentInstance;
@@ -21,3 +28,4 @@ describe('CreateCategoryComponent', () => {
     expect(component).toBeTruthy();
   });
 });
+

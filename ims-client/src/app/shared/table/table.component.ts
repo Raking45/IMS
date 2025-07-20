@@ -16,56 +16,58 @@ import { CommonModule } from '@angular/common';
   template: `
     <div class="table-container">
       <h2 class="table-title">{{ title }}</h2>
-      <table class="table">
-        <thead class="table-head" [ngClass]="headerBackground">
-          <tr class="table-row">
-            @for(header of headers; track header) {
-              <th
-                class="table-header"
-                (click)="sortableColumns.includes(header) && sortData(header)"
-              >
-                <span class="header-content">
-                  {{ header }}
-                  <i
-                    *ngIf="sortableColumns.includes(header)"
-                    [class]="getSortIconClass(header)"
-                    aria-hidden="true"
-                  ></i>
-                </span>
-              </th>
-            }
-          </tr>
-        </thead>
-        <tbody class="table-body">
-          @for(row of paginatedData; track row._id) {
+      <div class="table-responsive">
+        <table class="table">
+          <thead class="table-head" [ngClass]="headerBackground">
             <tr class="table-row">
               @for(header of headers; track header) {
-                <td class="table-cell">
-                  <ng-container *ngIf="header !== actionsColumn; else customCell">
-                    <ng-container *ngIf="header === imageColumn && row[header]; else regularCell">
-                      <img
-                        [src]="row[header]"
-                        [width]="imageSize"
-                        [height]="imageSize"
-                        alt="Image"
-                        class="thumbnail"
-                      />
-                    </ng-container>
-                    <ng-template #regularCell>
-                      {{ row[header] }}
-                    </ng-template>
-                  </ng-container>
-                  <ng-template #customCell>
-                    <ng-container
-                      *ngTemplateOutlet="rowActionsTemplate; context: { $implicit: row }"
-                    ></ng-container>
-                  </ng-template>
-                </td>
+                <th
+                  class="table-header"
+                  (click)="sortableColumns.includes(header) && sortData(header)"
+                >
+                  <span class="header-content">
+                    {{ header }}
+                    <i
+                      *ngIf="sortableColumns.includes(header)"
+                      [class]="getSortIconClass(header)"
+                      aria-hidden="true"
+                    ></i>
+                  </span>
+                </th>
               }
             </tr>
-          }
-        </tbody>
-      </table>
+          </thead>
+          <tbody class="table-body">
+            @for(row of paginatedData; track row._id) {
+              <tr class="table-row">
+                @for(header of headers; track header) {
+                  <td class="table-cell">
+                    <ng-container *ngIf="header !== actionsColumn; else customCell">
+                      <ng-container *ngIf="header === imageColumn && row[header]; else regularCell">
+                        <img
+                          [src]="row[header]"
+                          [width]="imageSize"
+                          [height]="imageSize"
+                          alt="Image"
+                          class="thumbnail"
+                        />
+                      </ng-container>
+                      <ng-template #regularCell>
+                        {{ row[header] }}
+                      </ng-template>
+                    </ng-container>
+                    <ng-template #customCell>
+                      <ng-container
+                        *ngTemplateOutlet="rowActionsTemplate; context: { $implicit: row }"
+                      ></ng-container>
+                    </ng-template>
+                  </td>
+                }
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
 
       <div class="pagination-wrapper">
         <div class="pagination">

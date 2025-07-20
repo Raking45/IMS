@@ -22,7 +22,7 @@ describe('ViewInventoryItemByIdComponent', () => {
     TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule,
-        ViewInventoryItemByIdComponent, // ✅ Imported, not declared
+        ViewInventoryItemByIdComponent,
       ],
       providers: [
         { provide: ActivatedRoute, useValue: { queryParamMap: of(convertToParamMap({}))} },

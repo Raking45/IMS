@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
 // Reactive form-related modules and utilities
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
-// ✅ Export the interface so it can be used in other components
+// Export the interface so it can be used in other components
 export interface FormInputConfig {
   label: string;
   name: string;
@@ -122,7 +122,7 @@ export class FormComponent implements OnInit, OnChanges {
     const group: any = {};
     for (const field of this.inputs) {
       const validators = field.required ? [Validators.required] : [];
-      group[field.name] = this.fb.control('', validators);
+      group[field.name] = this.fb.control(field.value ?? '', validators);
     }
     this.form = this.fb.group(group);
   }

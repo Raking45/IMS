@@ -281,14 +281,15 @@ import { FormComponent, FormInputConfig } from '../../shared/form/form.component
       display: flex;
       justify-content: space-between;
       gap: 10px;
+      width: 100%;
+      align-items: center;
+      justify-content: center;
     }
 
     .card-container {
       display: flex;
       width: 100%;
       align-items: center;
-      justify-content: center;
-      flex-direction: column;
       padding: 3rem 0;
     }
 
