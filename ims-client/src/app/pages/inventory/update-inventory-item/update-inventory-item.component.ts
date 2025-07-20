@@ -1,143 +1,156 @@
-
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { FormComponent, FormInputConfig } from '../../../shared/form/form.component';
+import { TableComponent } from '../../../shared/table/table.component';
 import { environment } from '../../../../environments/environment';
-
-interface InventoryItem {
-  _id: string;
-  name: string;
-  description: string;
-  quantity: number;
-  price: number;
-}
+import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-update-inventory-item',
+  selector: 'app-update-inventory',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormComponent, TableComponent],
   template: `
     <div class="update-inventory-container">
       <h2>Update Inventory Item</h2>
 
-      <!-- Dropdown to select item -->
-      <label for="selectedItem">Select an item:</label>
-      <select
-        id="selectedItem"
-        [(ngModel)]="selectedItemId"
-        (ngModelChange)="onItemSelected($event)"
-      >
-        <option value="">-- choose --</option>
-        <option *ngFor="let item of items" [value]="item._id">
-          {{ item.name }} ({{ item._id }})
-        </option>
-      </select>
+      <!-- Form 1: Select item -->
+      <app-form
+        *ngIf="selectionForm.length"
+        [title]="'Select Item to Edit'"
+        [submitLabel]="'Load Item'"
+        [inputs]="selectionForm"
+        (formSubmit)="onSelectItem($event)">
+      </app-form>
 
-      <!-- Form appears once an item is selected -->
-      <form *ngIf="selectedItem" (ngSubmit)="onSubmit()" #f="ngForm" class="form">
-        <div class="form-group">
-          <label for="name">Name</label>
-          <input
-            id="name"
-            name="name"
-            required
-            [(ngModel)]="selectedItem.name"
-            placeholder="e.g. Widget A"
-          />
-        </div>
+      <!-- Form 2: Edit item -->
+      <app-form
+        *ngIf="editForm.length"
+        [title]="'Update Inventory Item'"
+        [submitLabel]="'Update Item'"
+        [inputs]="editForm"
+        (formSubmit)="onSubmit($event)">
+      </app-form>
 
-        <div class="form-group">
-          <label for="description">Description</label>
-          <input
-            id="description"
-            name="description"
-            [(ngModel)]="selectedItem.description"
-            placeholder="e.g. High-quality widget"
-          />
-        </div>
-
-        <div class="form-group">
-          <label for="quantity">Quantity</label>
-          <input
-            id="quantity"
-            name="quantity"
-            type="number"
-            required
-            [(ngModel)]="selectedItem.quantity"
-            placeholder="e.g. 100"
-          />
-        </div>
-
-        <div class="form-group">
-          <label for="price">Price</label>
-          <input
-            id="price"
-            name="price"
-            type="number"
-            required
-            [(ngModel)]="selectedItem.price"
-            placeholder="e.g. 9.99"
-          />
-        </div>
-
-        <button type="submit" [disabled]="f.invalid">Update Item</button>
-      </form>
-
-      <p class="message" *ngIf="message">{{ message }}</p>
+      <!-- Item details table -->
+      <app-table
+        *ngIf="selectedItem"
+        [title]="'Item Snapshot'"
+        [headers]="['Id', 'Name', 'Description', 'Quantity', 'Price']"
+        [data]="[{
+          Id: selectedItem._id,
+          Name: selectedItem.name,
+          Description: selectedItem.description,
+          Quantity: selectedItem.quantity,
+          Price: selectedItem.price
+        }]"
+        [sortableColumns]="['Name', 'Quantity', 'Price']"
+        [columnTypes]="{ Name: 'alpha', Quantity: 'numeric', Price: 'numeric' }"
+      ></app-table>
     </div>
   `,
   styles: [`
-    .update-inventory-container { max-width: 600px; margin: auto; padding: 1rem; }
-    select, input { width: 100%; padding: 0.5rem; margin-bottom: 1rem; }
-    button { padding: 0.5rem 1rem; }
-    .message { margin-top: 1rem; color: var(--error-color); }
+    h2 {
+      text-align: center;
+    }
   `]
 })
 export class UpdateInventoryItemComponent implements OnInit {
-  items: InventoryItem[] = [];
-  selectedItemId = '';
-  selectedItem: InventoryItem | null = null;
-  message = '';
+  selectionForm: FormInputConfig[] = [];
+  editForm: FormInputConfig[] = [];
+  inventoryList: any[] = [];
+  selectedItem: any = null;
 
-  constructor(
-    private http: HttpClient,
-    private router: Router
-  ) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
-  ngOnInit() {
-    this.loadItems();
-  }
+  ngOnInit(): void {
+    this.http.get<any[]>(`${environment.apiBaseUrl}/api/reports/inventory/view`)
+      .subscribe(data => {
+        this.inventoryList = data;
 
-  private loadItems() {
-    this.http
-      .get<InventoryItem[]>(`${environment.apiBaseUrl}/api/reports/inventory/view`)
-      .subscribe({
-        next: items => this.items = items,
-        error: () => this.message = 'Failed to load inventory list.'
+        const options = data.map(item => ({
+          label: `${item._id} - ${item.name}`,
+          value: item._id
+        }));
+
+        this.selectionForm = [{
+          label: 'Select Inventory Item',
+          name: 'selectedId',
+          type: 'select',
+          required: true,
+          options,
+          errorMessage: 'Please select an item.'
+        }];
       });
   }
 
-  onItemSelected(id: string) {
-    const found = this.items.find(i => i._id === id);
-    this.selectedItem = found ? { ...found } : null;
-    this.message = '';
-  }
+  onSelectItem(formValue: any): void {
+    const id = formValue.selectedId;
+    if (!id) return;
 
-  onSubmit() {
-    if (!this.selectedItem) { return; }
-    this.http
-      .put<InventoryItem>(
-        `${environment.apiBaseUrl}/api/reports/inventory/update/${this.selectedItem._id}`,
-        this.selectedItem
-      )
-      .subscribe({
-        next: () => {
-          this.message = 'Item updated successfully.';
-          this.router.navigate(['/inventory']);
-        },
-        error: () => this.message = 'Failed to update item.'
+    this.http.get<any>(`${environment.apiBaseUrl}/api/reports/inventory/view/${id}`)
+      .subscribe(item => {
+        this.selectedItem = item;
+        this.buildEditForm(item);
       });
   }
+
+  buildEditForm(item: any): void {
+    this.editForm = [
+      {
+        label: 'Name',
+        name: 'name',
+        type: 'text',
+        required: true,
+        value: item.name ?? '',
+        errorMessage: 'Name is required.'
+      },
+      {
+        label: 'Description',
+        name: 'description',
+        type: 'text',
+        value: item.description ?? ''
+      },
+      {
+        label: 'Quantity',
+        name: 'quantity',
+        type: 'number',
+        required: true,
+        value: item.quantity ?? 0,
+        errorMessage: 'Quantity is required.'
+      },
+      {
+        label: 'Price',
+        name: 'price',
+        type: 'number',
+        required: true,
+        value: item.price ?? 0,
+        errorMessage: 'Price is required.'
+      }
+    ];
+  }
+
+  onSubmit(updatedForm: any): void {
+  if (!this.selectedItem?._id) return;
+
+  this.http.put<any>(
+    `${environment.apiBaseUrl}/api/reports/inventory/update/${this.selectedItem._id}`,
+    updatedForm
+  ).subscribe({
+    next: (data) => {
+      this.selectedItem = data;
+      alert('Inventory item updated successfully.');
+      this.router.navigate(['/inventory']);
+    },
+    error: () => {
+      alert('Failed to update item.');
+    }
+  });
+}
+
+
+  trackById(index: number, item: any): string {
+    return item._id || `${index}`;
+  }
+
 }

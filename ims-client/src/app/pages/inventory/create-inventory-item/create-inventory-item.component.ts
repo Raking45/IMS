@@ -1,49 +1,98 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HttpClient } from '@angular/common/http'; // <- keep this for the service
+import { HttpClient } from '@angular/common/http';
 import { FormComponent, FormInputConfig } from '../../../shared/form/form.component';
 import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-create-inventory-item',
   standalone: true,
-  imports: [CommonModule, FormComponent], // ❌ removed HttpClientModule
+  imports: [CommonModule, FormComponent],
   template: `
     <div class="create-inventory-container">
+      <h2>Create New Inventory Item</h2>
+
       <app-form
         [title]="'Create Inventory Item'"
         [submitLabel]="'Create Item'"
         [inputs]="formFields"
-        (formSubmit)="handleSubmit($event)">
+        (formSubmit)="onSubmit($event)">
       </app-form>
 
-      <p *ngIf="message">{{ message }}</p>
+      <p *ngIf="message" class="form-message">{{ message }}</p>
     </div>
   `,
-  styles: [``]
+  styles: [`
+   h2 {
+    text-align: center;
+    }
+  `]
 })
 export class CreateInventoryItemComponent {
   formFields: FormInputConfig[] = [
-    { name: '_id', label: 'ID', placeholder: 'Enter ID', type: 'text', required: true },
-    { name: 'name', label: 'Name', placeholder: 'Enter name', type: 'text', required: true },
-    { name: 'description', label: 'Description', placeholder: 'Enter description', type: 'textarea' },
-    { name: 'quantity', label: 'Quantity', placeholder: 'Enter quantity', type: 'number', required: true },
-    { name: 'price', label: 'Price', placeholder: 'Enter price', type: 'number', required: true },
-    { name: 'categoryId', label: 'Category ID', placeholder: 'Enter category ID', type: 'text', required: true },
-    { name: 'supplierId', label: 'Supplier ID', placeholder: 'Enter supplier ID', type: 'text', required: true }
-  ];
+  {
+    name: '_id',
+    label: 'ID',
+    type: 'text',
+    placeholder: 'e.g. inv6',
+    required: true,
+    errorMessage: 'ID is required.'
+  },
+  {
+    name: 'name',
+    label: 'Name',
+    type: 'text',
+    placeholder: 'e.g. Cookbook',
+    required: true,
+    errorMessage: 'Name is required.'
+  },
+  {
+    name: 'description',
+    label: 'Description',
+    type: 'textarea',
+    placeholder: 'e.g. Healthy recipes'
+  },
+  {
+    name: 'quantity',
+    label: 'Quantity',
+    type: 'number',
+    placeholder: 'e.g. 80',
+    required: true,
+    errorMessage: 'Quantity is required.'
+  },
+  {
+    name: 'price',
+    label: 'Price',
+    type: 'number',
+    placeholder: 'e.g. 24.50',
+    required: true,
+    errorMessage: 'Price is required.'
+  },
+  {
+    name: 'categoryId',
+    label: 'Category ID',
+    type: 'text',
+    placeholder: 'e.g. CAT006',
+    required: true,
+    errorMessage: 'Category ID is required.'
+  },
+  {
+    name: 'supplierId',
+    label: 'Supplier ID',
+    type: 'text',
+    placeholder: 'e.g. SUP021',
+    required: true,
+    errorMessage: 'Supplier ID is required.'
+  }
+];
+
 
   message = '';
 
   constructor(private http: HttpClient) {}
 
-  trackByName(index: number, input: FormInputConfig): string {
-    return input.name || index.toString();
-  }
-
-  handleSubmit(formData: any): void {
-    const url = `${environment.apiBaseUrl}/api/reports/inventory/create-inventory/`;
-    console.log('POSTing to:', url, formData);
+  onSubmit(formData: any): void {
+    const url = `${environment.apiBaseUrl}/api/reports/inventory/create-inventory`;
 
     const payload = {
       ...formData,
@@ -52,8 +101,9 @@ export class CreateInventoryItemComponent {
     };
 
     this.http.post(url, payload).subscribe({
-
-      next: () => this.message = 'Inventory item created successfully!',
+      next: () => {
+        this.message = 'Inventory item created successfully!';
+      },
       error: (err) => {
         if (err.status === 400) {
           this.message = 'Validation error. Please check your input.';
@@ -61,7 +111,6 @@ export class CreateInventoryItemComponent {
           this.message = 'Duplicate item ID. Please use a unique ID.';
         } else {
           this.message = 'Failed to create inventory item.';
-
         }
       }
     });

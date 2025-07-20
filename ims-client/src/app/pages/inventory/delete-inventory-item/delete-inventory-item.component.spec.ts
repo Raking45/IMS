@@ -1,69 +1,97 @@
 // src/app/pages/inventory/delete-inventory-item/delete-inventory-item.component.spec.ts
 
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { DeleteInventoryItemComponent } from './delete-inventory-item.component';
-import { HttpClient } from '@angular/common/http';
-import { of, throwError } from 'rxjs';
-import { CommonModule } from '@angular/common';
-import { FormComponent } from '../../../shared/form/form.component';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import { UpdateInventoryItemComponent } from '../update-inventory-item/update-inventory-item.component';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { environment } from '../../../../environments/environment';
 
-describe('DeleteInventoryItemComponent', () => {
-  let fixture: ComponentFixture<DeleteInventoryItemComponent>;
-  let component: DeleteInventoryItemComponent;
-  let httpSpy: jasmine.SpyObj<HttpClient>;
+describe('UpdateInventoryItemComponent', () => {
+  let fixture: ComponentFixture<UpdateInventoryItemComponent>;
+  let component: UpdateInventoryItemComponent;
+  let httpMock: HttpTestingController;
+  let routerSpy: jasmine.SpyObj<Router>;
 
-  const testId  = 'item123';
-  const fullUrl = `http://localhost:3000/api/reports/inventory/delete/${testId}`;
+  const mockItems = [
+    { _id: 'a1', name: 'Item A', description: 'Desc A', quantity: 10, price: 1.23 },
+    { _id: 'b2', name: 'Item B', description: 'Desc B', quantity: 20, price: 4.56 }
+  ];
 
-  beforeEach(async () => {
-    // create a spy for HttpClient.delete
-    httpSpy = jasmine.createSpyObj('HttpClient', ['delete']);
-
+   beforeEach(async () => {
+    routerSpy = jasmine.createSpyObj('Router', ['navigate']);
     await TestBed.configureTestingModule({
-      imports: [
-        // register your standalone component
-        DeleteInventoryItemComponent
-      ],
-      providers: [
-        // override HttpClient with our spy
-        { provide: HttpClient, useValue: httpSpy }
-      ]
-    })
-    // remove the real HttpClientModule (and the FormComponent’s deps) by overriding
-    .overrideComponent(DeleteInventoryItemComponent, {
-      set: {
-        imports: [
-          CommonModule,
-          FormComponent
-          // no HttpClientModule here! we get HttpClient from the spy above
-        ]
-      }
-    })
-    .compileComponents();
+      imports: [ UpdateInventoryItemComponent, HttpClientTestingModule, FormsModule ],
+      providers: [{ provide: Router, useValue: routerSpy }]
+    }).compileComponents();
 
-    fixture = TestBed.createComponent(DeleteInventoryItemComponent);
+    fixture = TestBed.createComponent(UpdateInventoryItemComponent);
     component = fixture.componentInstance;
+    httpMock  = TestBed.inject(HttpTestingController);
   });
 
-  it('should send DELETE request and show success message', () => {
-    httpSpy.delete.and.returnValue(of(void 0));  // simulate 200 OK
+  afterEach(() => httpMock.verify());
 
-    component.handleDelete({ _id: testId });
+  it('should create and load items on init', fakeAsync(() => {
+    fixture.detectChanges();  // ngOnInit → GET /view
+    const req = httpMock.expectOne(`${environment.apiBaseUrl}/api/reports/inventory/view`);
+    expect(req.request.method).toBe('GET');
+    req.flush(mockItems);
+    tick();
 
-    expect(httpSpy.delete).toHaveBeenCalledWith(fullUrl);
-    expect(component.error).toBeFalse();
-    expect(component.message)
-      .toBe(`Inventory item “${testId}” deleted successfully!`);
-  });
+    expect(component).toBeTruthy();
+    expect(component.inventoryList).toEqual(mockItems);
+  }));
 
-  it('should show error message on DELETE failure', () => {
-    httpSpy.delete.and.returnValue(throwError(() => new Error('Network error')));
+  it('should populate selectedItem when an id is chosen', fakeAsync(() => {
+    fixture.detectChanges();
+    httpMock.expectOne(`${environment.apiBaseUrl}/api/reports/inventory/view`).flush(mockItems);
+    tick();
 
-    component.handleDelete({ _id: testId });
+    // Corrected method call with expected formValue object
+    component.onSelectItem({ selectedId: 'b2' });
+    const req = httpMock.expectOne(`${environment.apiBaseUrl}/api/reports/inventory/view/b2`);
+    expect(req.request.method).toBe('GET');
+    req.flush(mockItems[1]);
+    tick();
 
-    expect(httpSpy.delete).toHaveBeenCalledWith(fullUrl);
-    expect(component.error).toBeTrue();
-    expect(component.message)
-      .toBe(`Failed to delete inventory item “${testId}.”`);
-  });
+    expect(component.selectedItem).toEqual(mockItems[1]);
+  }));
+
+  it('should PUT update and navigate on success', fakeAsync(() => {
+    fixture.detectChanges();
+    httpMock.expectOne(`${environment.apiBaseUrl}/api/reports/inventory/view`).flush(mockItems);
+    tick();
+
+    component.selectedItem = { ...mockItems[0] };
+    component.onSubmit({ name: 'Updated Name', description: 'Updated Desc', quantity: 15, price: 2.34 });
+
+    const putReq = httpMock.expectOne(
+      `${environment.apiBaseUrl}/api/reports/inventory/update/${mockItems[0]._id}`
+    );
+    expect(putReq.request.method).toBe('PUT');
+    expect(putReq.request.body.name).toBe('Updated Name');
+    putReq.flush(mockItems[0]);
+    tick();
+
+    expect(routerSpy.navigate).toHaveBeenCalledWith(['/inventory']);
+  }));
+
+  it('should alert on update failure', fakeAsync(() => {
+    spyOn(window, 'alert');
+    fixture.detectChanges();
+    httpMock.expectOne(`${environment.apiBaseUrl}/api/reports/inventory/view`).flush(mockItems);
+    tick();
+
+    component.selectedItem = { ...mockItems[0] };
+    component.onSubmit({ name: 'Fail Name', description: 'Fail Desc', quantity: 0, price: 0 });
+
+    const putReq = httpMock.expectOne(
+      `${environment.apiBaseUrl}/api/reports/inventory/update/${mockItems[0]._id}`
+    );
+    putReq.flush('Update failed', { status: 500, statusText: 'Server Error' });
+    tick();
+
+    expect(window.alert).toHaveBeenCalledWith('Failed to update item.');
+  }));
 });

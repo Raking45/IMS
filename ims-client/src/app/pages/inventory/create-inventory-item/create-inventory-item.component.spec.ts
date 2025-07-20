@@ -10,7 +10,7 @@ describe('CreateInventoryItemComponent', () => {
   let fixture: ComponentFixture<CreateInventoryItemComponent>;
   let httpMock: HttpTestingController;
 
-  const endpoint = `${environment.apiBaseUrl}/api/reports/inventory/create-inventory/`;
+  const endpoint = `${environment.apiBaseUrl}/api/reports/inventory/create-inventory`;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -56,7 +56,7 @@ describe('CreateInventoryItemComponent', () => {
       supplierId: 'sup001'
     };
 
-    component.handleSubmit(mockForm);
+    component.onSubmit(mockForm);
 
     const req = httpMock.expectOne(endpoint);
     expect(req.request.method).toBe('POST');
@@ -83,7 +83,7 @@ describe('CreateInventoryItemComponent', () => {
       supplierId: 'sup002'
     };
 
-    component.handleSubmit(mockForm);
+    component.onSubmit(mockForm);
 
     const req = httpMock.expectOne(endpoint);
     req.flush({}, { status: 409, statusText: 'Conflict' });
@@ -103,7 +103,7 @@ describe('CreateInventoryItemComponent', () => {
       supplierId: ''
     };
 
-    component.handleSubmit(mockForm);
+    component.onSubmit(mockForm);
 
     const req = httpMock.expectOne(endpoint);
     req.flush({}, { status: 400, statusText: 'Bad Request' });
@@ -122,7 +122,7 @@ describe('CreateInventoryItemComponent', () => {
       supplierId: 'supX'
     };
 
-    component.handleSubmit(mockForm);
+    component.onSubmit(mockForm);
 
     const req = httpMock.expectOne(endpoint);
     req.flush({}, { status: 500, statusText: 'Internal Server Error' });
