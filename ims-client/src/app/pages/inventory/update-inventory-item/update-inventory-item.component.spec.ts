@@ -67,6 +67,8 @@ describe('UpdateInventoryItemComponent', () => {
     component.onSelectItem({ selectedId: '' });
 
     httpMock.expectNone(`${environment.apiBaseUrl}/api/reports/inventory/view/`);
+
+    expect(component.selectedItem).toBeNull();
   }));
 
   it('should send PUT request on form submission and update selectedItem', fakeAsync(() => {

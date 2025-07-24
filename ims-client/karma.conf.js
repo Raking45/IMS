@@ -35,6 +35,10 @@ module.exports = function (config) {
     },
     reporters: ['progress', 'kjhtml'],
     browsers: ['Firefox'],
-    restartOnFileChange: true
+    restartOnFileChange: true,
+
+    mime: {
+      'text/x-typescript': ['ts', 'tsx']
+    }
   });
 };
