@@ -2,5 +2,5 @@
 
 export const environment = {
   production: true,
-  apiBaseUrl: 'https://team-apollo-inventory-management-system.onrender.com/'
+  apiBaseUrl: 'https://team-apollo-inventory-management-system.onrender.com'
 };
