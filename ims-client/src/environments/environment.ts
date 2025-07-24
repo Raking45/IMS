@@ -2,5 +2,5 @@
 
 export const environment = {
   production: true,
-  apiBaseUrl: 'http://localhost:3000'
+  apiBaseUrl: 'https://team-apollo-inventory-management-system.onrender.com'
 };
