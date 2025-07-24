@@ -64,6 +64,10 @@ app.use((req, res, next) => {
   next();
 });
 
+app.get('/', (req, res) => {
+  res.send('Inventory Management System API is running.');
+});
+
 
 // Express app configuration Middleware
 app.use(logger('dev'));
