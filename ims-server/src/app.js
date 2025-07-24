@@ -70,11 +70,6 @@ app.use('/api/reports/categories/delete', deleteCategoryRouter);
 app.use('/api/reports/categories/update', updateCategoryRouter);
 app.use('/api/search', searchRouter);
 
-// Basic root route
-app.get('/', (req, res) => {
-  res.send('Inventory Management System API is running.');
-});
-
 // Serve Angular static files **after** API routes and middleware
 app.use(express.static(path.join(__dirname, '../../ims-client/dist/ims-client/browser/')));
 
