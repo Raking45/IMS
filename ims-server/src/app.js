@@ -76,7 +76,7 @@ app.get('/', (req, res) => {
 });
 
 // Serve Angular static files **after** API routes and middleware
-app.use(express.static(path.join(__dirname, '../../ims-client/dist/ims-client/browser')));
+app.use(express.static(path.join(__dirname, '../../ims-client/dist/ims-client/browser/')));
 
 // For any other route, serve Angular's index.html to enable client-side routing
 app.get('*', (req, res) => {
