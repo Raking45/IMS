@@ -288,6 +288,7 @@ import { FormComponent, FormInputConfig } from '../../shared/form/form.component
 
     .card-container {
       display: flex;
+      flex-direction: column;
       width: 100%;
       align-items: center;
       padding: 3rem 0;
