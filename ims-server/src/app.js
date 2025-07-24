@@ -13,8 +13,7 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const { notFoundHandler, errorHandler } = require('./routes/utils/error-handler');
 const connectToDatabase = require('./routes/utils/mongoose'); // Import Connection
-
-
+const path = require('path');
 
 // Importing the index router
 const indexRouter = require('./routes/index');
@@ -46,6 +45,14 @@ const updateCategoryRouter = require('./routes/categories/update-category');
 
 // Importing search router
 const searchRouter = require('./routes/search')
+
+// Serve static Angular files
+app.use(express.static(path.join(__dirname, '../../ims-client/dist/ims-client')));
+
+// All other GET requests not handled before, serve Angular index.html
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../../ims-client/dist/ims-client/index.html'));
+});
 
 // Connect to MongoDB using Mongoose
 connectToDatabase();  // Initializes DB Connection
